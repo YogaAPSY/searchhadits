@@ -24,12 +24,12 @@
                     <small>Request time  ({{ $seconds }} seconds)</small>
                      @foreach($views as $hadits)
                     <div class="search-result">
-                        <h3>{{ $hadits->no_hadits }}</a></h3>
+                        <h3>Hadits Bukhari No.{{ $hadits->no_hadits }}</a></h3>
                         <p>
                             {{ $hadits->id }}
                         </p>
                         <p>
-                          {{ $hadits->hadits_translate }}
+                          {{ str_limit($hadits->hadits_translate, 200) }}
                         </p>
                     </div>
                     <div class="hr-line-dashed"></div>

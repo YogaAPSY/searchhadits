@@ -9,17 +9,9 @@ use Sastrawi\Stemmer\StemmerFactory;
 
 class PreprocessingController extends Controller
 {
-    /*private $x;
 
-    public function __construct($blabla)
-    {
-        parent::__construct();
-        $this->x = $blabla;
-    }
-    */
-
-    public function init($keyword){
-        $casefolding = $this->casefolding($keyword);
+    public function init($text){
+        $casefolding = $this->casefolding($text);
         $tokenizing = $this->tokenizing($casefolding);
         $stopword = $this->stopword($tokenizing);
         $stemming = $this->stemming($stopword);
@@ -27,29 +19,29 @@ class PreprocessingController extends Controller
         return $stemming;
     }
 
-     public function casefolding($keyword){
-        $keyword = strtolower($keyword);
-        return $keyword;
+     public function casefolding($texts){
+        $text = strtolower($texts);
+        return $text;
     }
 
-    public function tokenizing($words){
-        $word = preg_split('/\s+/', $words);
-        return $word;
+    public function tokenizing($texts){
+        $text = preg_split('/\s+/', $texts);
+        return $text;
     }
 
-    public function stopword($keywords){
+    public function stopword($texts){
     $stopword = File::get('stopwords-id.txt');
-    foreach ($keywords as $k => $word) {
+    foreach ($texts as $k => $text) {
         $token = preg_split('/\s+/', $stopword);
         foreach ($token as $l => $wordfalse) {
             
-            if ($word==$wordfalse) {
-                unset($keywords[$k]);
+            if ($text==$wordfalse) {
+                unset($texts[$k]);
             }
         }
     }
 
-    return $keywords;
+    return $texts;
 
     }
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CosineSimilarityController;
+use App\Http\Controllers\JaccardSimilarityController;
 use Illuminate\Http\Request;
 
 class TfidfController extends Controller
@@ -13,12 +15,17 @@ class TfidfController extends Controller
     public $docVector = [];
     public $dotProduct = [];
     public $cosSimiliarity = [];
+    public $jacSimiliarity = [];
     public $tfQuery;
     public $vectorQuery;
     public $queryWeight = [];
     public $docIdf;
 
-    public function inits($documents,$terms){
+    public function __construct(){
+
+    }
+
+    public function init($documents,$terms, $similarity){
         $this->tfIdfCalculator($documents,$terms);
         $this->tfQueryCalculator($terms);
         $this->documentWeight($documents,$terms);
@@ -27,10 +34,13 @@ class TfidfController extends Controller
         $this->queryVectorCalculator($terms);
         $this->dotProductCalc($documents,$terms);
         $this->cosineSimiliarity($documents);
+        $this->jaccardSimilarity($documents);
 
-        return $this->cosSimiliarity;
-
-
+        if($similarity == 'cosine'){
+            return $this->cosSimiliarity;
+        } else if($similarity == 'jaccard'){
+            return $this->jacSimiliarity;
+        }
     }
 
     public function tfIdfCalculator($documents,$terms){
@@ -97,7 +107,7 @@ class TfidfController extends Controller
                 $this->tfIdfWeight[$key][$term];
             }
 
-            $this->docVector[$key] = sqrt($squareWeight);
+            $this->docVector[$key] = $squareWeight;
             $squareWeight = 0;
 
         }
@@ -123,15 +133,20 @@ class TfidfController extends Controller
 
     public function cosineSimiliarity($documents){
 
-        foreach ($documents as $key => $doc) {
+        $cosine = new CosineSimilarityController();
 
-            if ($this->docVector[$key] == 0)
-                $this->cosSimiliarity[$key] = 0;
-            else{
-                $this->cosSimiliarity[$key] =
-                $this->docVector[$key] * $this->vectorQuery;
-            }
-        }
+        $this->cosSimiliarity = $cosine->cos($documents, $this->docVector, $this->vectorQuery, $this->dotProduct);
+
+        return $this->cosSimiliarity;
+
+    }
+
+    public function jaccardSimilarity($documents){
+        $jaccard = new JaccardSimilarityController();
+
+        $this->jacSimiliarity = $jaccard->jac($documents, $this->docVector, $this->vectorQuery, $this->dotProduct);
+
+        return $this->jacSimiliarity;
     }
 
     public function tfQueryCalculator($terms){
@@ -155,7 +170,7 @@ class TfidfController extends Controller
 
         foreach ($terms as $term) {
             $squareWeight += $this->queryWeight[$term] * $this->queryWeight[$term];
-            $this->vectorQuery = sqrt($squareWeight);
+            $this->vectorQuery = $squareWeight;
         }
     }
 }
