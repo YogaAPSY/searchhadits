@@ -19,4 +19,4 @@ Route::get('input', 'InputController@create');
 Route::post('store', 'InputController@store');
 
 Route::get('/', 'ViewController@index');
-Route::get('search', 'MainController@init');
+Route::get('search', 'ViewController@result');

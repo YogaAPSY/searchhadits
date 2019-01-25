@@ -12,13 +12,27 @@
                             <div class="input-group">
                                 <input type="text" placeholder="Search" name="search" class="form-control input-lg">
                                 <div class="input-group-btn">
-                                     <button class="btn btn-md btn-primary" type="submit">
-                                        <i class="glyphicon glyphicon-search"></i>Search</button>
+                                     <button class="btn btn-md btn-primary" type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"><span style="margin-left:10px;">Search</span></button>
                                 </div>
                             </div>
                         </form>
                     </div>
-                </div>
+                    <br>
+                    
+                    <div class="table">
+                      <tr>
+                        <th>df</th>
+                        <th>idf</th>
+                        <th>tfidf</th>
+                      </tr>
+                      <tr>
+                        <td>{{ $df }}</td>
+                        <td>{{ $idf }}</td>
+                        <td>{{ $tfidf }}</td>
+                      </tr>
+                    </div>
+
+               
             </div>
         </div>
     </div>

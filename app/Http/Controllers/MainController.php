@@ -8,10 +8,10 @@ use App\Http\Controllers\PreprocessingController;
 use App\Http\Controllers\TfidfController;
 use App\Http\Controllers\ViewController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MainController extends Controller
 {
-	public $keyword;
 	public $praprosesDocument = [];
 	public $praprosesQuery = [];
     public $cosine_result = [];
@@ -21,45 +21,40 @@ class MainController extends Controller
     private $views;
     private $preprocessing;
     private $tfidf;
-    private $cosine;
 
     public function __construct(){
         $this->preprocessing = new PreprocessingController();
         $this->tfidf = new TfidfController();
-        $this->views = new ViewController();
-        $this->cosine = new CosineSimilarityController($this->praprosesDocument);
     }
 
-    public function init(Request $request){
-        if($request->get('search') !== NULL){
-            $executionStartTime = microtime(true);
-            $this->keyword = $request->get('search');
+    public function init($keyword, $similarity){
 
-            $this->preprocessingQuery();
-            $this->preprocessingDocument();
+        $this->preprocessingQuery($keyword);
+        $this->preprocessingDocument();
+        //print_r($this->cosine_result);
+
+        if($similarity == 'cosine'){
             $this->cosSimilarity();
             $this->rankingCosine();
-            $this->rankingJaccard();
-            
-            //$rank = implode(" ",$this->rank_list);
-            $keyword = $this->keyword;
-            $total = count($this->rank_jaccard);
-            $executionEndTime = microtime(true);
-            $seconds = $executionEndTime - $executionStartTime;
-            $views = Hadits::whereIn('id', $this->rank_jaccard)->paginate(15);
-            $views->appends($request->only('search'));
-            return view('home.result', compact('views', 'total', 'seconds', 'keyword'));
 
-        } else {
-            return 'Masukan Keyword';
+            return $this->rank_cosine;
+
+        }elseif($similarity == 'jaccard') {
+            $this->jacSimilarity();
+            $this->rankingJaccard();
+            //print_r($this->jaccard_result);
+            return $this->rank_jaccard;
         }
     }
 
-    public function preprocessingQuery(){
 
-	    $praprosesQuery = $this->preprocessing->init($this->keyword);
+    public function preprocessingQuery($keyword){
+
+	    $praprosesQuery = $this->preprocessing->init($keyword);
 
         $this->praprosesQuery = $praprosesQuery;
+
+        return $this->praprosesQuery;
 	}
 
      public function preprocessingDocument(){
@@ -75,7 +70,6 @@ class MainController extends Controller
             $praprosesDocument = $this->preprocessing->init($value);
 
             $this->praprosesDocument[] = $praprosesDocument;
-
         }
 
     }
@@ -86,38 +80,38 @@ class MainController extends Controller
 
         $this->cosine_result = $similarity;
 
+        //print_r($this->cosine_result);
+
     }
 
     public function jacSimilarity(){
-         $similarity = $this->tfidf->init($this->praprosesDocument, $this->praprosesQuery, "cosine");
+        $similarity = $this->tfidf->init($this->praprosesDocument, $this->praprosesQuery, "jaccard");
 
         $this->jaccard_result = $similarity;
+
+        //print_r($this->jaccard_result);
     }
 
     public function rankingCosine(){
         $doc = $this->cosine_result;
         arsort($doc);
-        foreach ($doc as $key => $val) {
-            if($doc[$key] > 0){
-                $this->rank_cosine[] = $key+1;
+        foreach ($doc as $keys => $val) {
+            if($doc[$keys] > 0){
+                $this->rank_cosine[] = $keys+1;
             }
         }
 
     }
 
     public function rankingJaccard(){
-        $doc = $this->cosine_result;
+        $doc = $this->jaccard_result;
         arsort($doc);
         foreach ($doc as $key => $val) {
             if($doc[$key] > 0){
                 $this->rank_jaccard[] = $key+1;
             }
         }
-    }
-
-    public function result($ranking,$executionStartTime){
-            
-        $this->views->results($ranking,$executionStartTime);
+        //print_r($this->rank_jaccard);
     }
 
 }

@@ -19,13 +19,13 @@ class TfidfController extends Controller
     public $tfQuery;
     public $vectorQuery;
     public $queryWeight = [];
-    public $docIdf;
+    public $docIdf = [];
+    public $df = [];
 
-    public function __construct(){
 
-    }
 
     public function init($documents,$terms, $similarity){
+
         $this->tfIdfCalculator($documents,$terms);
         $this->tfQueryCalculator($terms);
         $this->documentWeight($documents,$terms);
@@ -33,15 +33,25 @@ class TfidfController extends Controller
         $this->documentVector($documents,$terms);
         $this->queryVectorCalculator($terms);
         $this->dotProductCalc($documents,$terms);
-        $this->cosineSimiliarity($documents);
-        $this->jaccardSimilarity($documents);
-
+      
         if($similarity == 'cosine'){
+            
+            $this->cosineSimiliarity($documents);
+
+            unset($documents);
+
             return $this->cosSimiliarity;
-        } else if($similarity == 'jaccard'){
+        } elseif($similarity == 'jaccard'){
+         
+            $this->jaccardSimiliarity($documents);
+
+            unset($documents);
+
             return $this->jacSimiliarity;
+        
         }
     }
+
 
     public function tfIdfCalculator($documents,$terms){
         $df = [];
@@ -53,6 +63,7 @@ class TfidfController extends Controller
                     $df[$term] = 0;
                 $f = $this->compare($doc,$term);
                 $this->docTf[$key][$term] = $f;
+
                 if($f > 0)
                     $df[$term] += 1;
 
@@ -64,22 +75,22 @@ class TfidfController extends Controller
                 $this->docIdf[$term] = 0;
             }
             else{
-                $this->docIdf[$term] = log($docCount/$df[$term]);
+                $this->docIdf[$term] = log10($docCount/$df[$term]);
             }
+
         }
+             
     }
 
     public function compare($text,$_term){
         $term = $_term;
         $words = $text;
+
         $_f = 0;
-        if(is_array($words) || is_object($words)){
         foreach ($words as $word) {
             if($word == $term)
-                $_f += 1;
+            $_f += 1;   
         }
-        }
-
         return $_f;
     }
 
@@ -91,8 +102,8 @@ class TfidfController extends Controller
                 $this->tfIdfWeight[$key][$term] =
                 $this->docTf[$key][$term] *
                 $this->docIdf[$term];
-            }
 
+            }
         }
 
     }
@@ -109,6 +120,8 @@ class TfidfController extends Controller
 
             $this->docVector[$key] = $squareWeight;
             $squareWeight = 0;
+
+           //print_r($this->docVector[$key] . "<br>");
 
         }
 
@@ -136,12 +149,13 @@ class TfidfController extends Controller
         $cosine = new CosineSimilarityController();
 
         $this->cosSimiliarity = $cosine->cos($documents, $this->docVector, $this->vectorQuery, $this->dotProduct);
-
+        
         return $this->cosSimiliarity;
+
 
     }
 
-    public function jaccardSimilarity($documents){
+    public function jaccardSimiliarity($documents){
         $jaccard = new JaccardSimilarityController();
 
         $this->jacSimiliarity = $jaccard->jac($documents, $this->docVector, $this->vectorQuery, $this->dotProduct);
@@ -162,7 +176,6 @@ class TfidfController extends Controller
         foreach ($terms as $term) {
             $this->queryWeight[$term] = $this->tfQuery[$term] * $this->docIdf[$term];
         }
-
     }
 
     function queryVectorCalculator($terms){
@@ -173,4 +186,5 @@ class TfidfController extends Controller
             $this->vectorQuery = $squareWeight;
         }
     }
+
 }
