@@ -60,16 +60,17 @@ class MainController extends Controller
      public function preprocessingDocument(){
 
         $document = Hadits::all();
-
+        $documents = [];
         foreach ($document as $value) {
             $documents[$value->id] = $value->hadits_translate;
         }
 
+        $this->praprosesDocument = [];
         foreach ($documents as $key => $value) {
   
             $praprosesDocument = $this->preprocessing->init($value);
 
-            $this->praprosesDocument[] = $praprosesDocument;
+            $this->praprosesDocument []= $praprosesDocument;
         }
 
     }
@@ -96,7 +97,7 @@ class MainController extends Controller
         $doc = $this->cosine_result;
         arsort($doc);
         foreach ($doc as $keys => $val) {
-            if($doc[$keys] > 0){
+            if($doc[$keys] > 0.5){
                 $this->rank_cosine[] = $keys+1;
             }
         }
@@ -107,7 +108,7 @@ class MainController extends Controller
         $doc = $this->jaccard_result;
         arsort($doc);
         foreach ($doc as $key => $val) {
-            if($doc[$key] > 0){
+            if($doc[$key] > 0.5){
                 $this->rank_jaccard[] = $key+1;
             }
         }

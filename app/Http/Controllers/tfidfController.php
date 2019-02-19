@@ -38,14 +38,10 @@ class TfidfController extends Controller
             
             $this->cosineSimiliarity($documents);
 
-            unset($documents);
-
             return $this->cosSimiliarity;
         } elseif($similarity == 'jaccard'){
          
             $this->jaccardSimiliarity($documents);
-
-            unset($documents);
 
             return $this->jacSimiliarity;
         

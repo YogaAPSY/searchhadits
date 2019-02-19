@@ -57,20 +57,23 @@
               <td>{{ $TP_cos }}</td>
               <td>{{ $FN_cos }}</td>
               <td>{{ $FP_cos }}</td>
-              <td>{{ $recall_cos }}%</td>
-              <td>{{ $precision_cos }}%</td>
+              <td>{{ round($recall_cos,2) }}%</td>
+              <td>{{ round($precision_cos,2) }}%</td>
             </tr>
            </table>
+        <hr>
         <h4>
         {{ $total_cos }} results found for: <span class="text-navy">{{ $keyword }}</span>
         </h4>
         <small>Request time  ({{ $time_cosine }} seconds)</small>
-        @foreach($cos as $hadits)
+        <hr>
+        @foreach($cosArr as $hadits)
+        <?php  
+          $hadits = (object)$hadits;
+        ?>
         <div class="search-result">
         <h3>Hadits Bukhari No.{{ $hadits->no_hadits }}</a></h3>
-        <p>
-          {{ $hadits->id }}
-        </p>
+    
         <p>
         {{ str_limit($hadits->hadits_translate, 200) }}
         </p>
@@ -105,21 +108,23 @@
           <td>{{ $TP_jac }}</td>
           <td>{{ $FN_jac }}</td>
           <td>{{ $FP_jac }}</td>
-          <td>{{ $recall_jac }}%</td>
-          <td>{{ $precision_jac }}%</td>
+          <td>{{ round($recall_jac,2) }}%</td>
+          <td>{{ round($precision_jac,2) }}%</td>
         </tr>
       </table>
-  
+    <hr>
       <h4>
       {{ $total_jac }} results found for: <span class="text-navy">{{ $keyword }}</span>
       </h4>
       <small>Request time  ({{ $time_jaccard }} seconds)</small>
-      @foreach($jac as $hadits)
+    <hr>
+      @foreach($jacArr as $hadits)
+       <?php  
+          $hadits = (object)$hadits;
+        ?>
       <div class="search-result">
       <h3>Hadits Bukhari No.{{ $hadits->no_hadits }}</a></h3>
-      <p>
-        {{ $hadits->id }}
-      </p>
+
       <p>
       {{ str_limit($hadits->hadits_translate, 200) }}
       </p>
