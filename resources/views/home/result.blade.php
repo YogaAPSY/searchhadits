@@ -52,13 +52,15 @@
               <th>Precision</th>
             </tr>
             <tr>
-              <td>{{ $keyword }}</td>
-              <td>{{ $total_cos }}</td>
-              <td>{{ $TP_cos }}</td>
-              <td>{{ $FN_cos }}</td>
-              <td>{{ $FP_cos }}</td>
-              <td>{{ round($recall_cos,2) }}%</td>
-              <td>{{ round($precision_cos,2) }}%</td>
+            @foreach($result as $results)
+              <td>{{ $results->keyword }}</td>
+              <td>{{ $results->total_cosine }}</td>
+              <td>{{ $results->tp_cosine }}</td>
+              <td>{{ $results->fn_cosine }}</td>
+              <td>{{ $results->fp_cosine }}</td>
+              <td>{{ round($results->recall_cosine,2) }}%</td>
+              <td>{{ round($results->precision_cosine,2) }}%</td>
+            @endforeach
             </tr>
            </table>
         <hr>
@@ -103,13 +105,15 @@
           <th>Precision</th>
         </tr>
         <tr>
-          <td>{{ $keyword }}</td>
-          <td>{{ $total_jac }}</td>
-          <td>{{ $TP_jac }}</td>
-          <td>{{ $FN_jac }}</td>
-          <td>{{ $FP_jac }}</td>
-          <td>{{ round($recall_jac,2) }}%</td>
-          <td>{{ round($precision_jac,2) }}%</td>
+            @foreach($result as $results)
+              <td>{{ $results->keyword }}</td>
+              <td>{{ $results->total_jaccad }}</td>
+              <td>{{ $results->tp_jaccard }}</td>
+              <td>{{ $results->fn_jaccard }}</td>
+              <td>{{ $results->fp_jaccard }}</td>
+              <td>{{ round($results->recall_jaccard,2) }}%</td>
+              <td>{{ round($results->precision_jaccard,2) }}%</td>
+            @endforeach
         </tr>
       </table>
     <hr>
