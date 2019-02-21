@@ -41,28 +41,6 @@
       <div class="row">
         <div class="col-lg-6">
           <h4>Cosine Similarity</h4>
-          <table class="table table-striped">
-            <tr>
-              <th>Keyword</th>
-              <th>Dokumen ditemukan</th>
-              <th>TP</th>
-              <th>FN</th>
-              <th>FP</th>
-              <th>Recall</th>
-              <th>Precision</th>
-            </tr>
-            <tr>
-            @foreach($result as $results)
-              <td>{{ $results->keyword }}</td>
-              <td>{{ $results->total_cosine }}</td>
-              <td>{{ $results->tp_cosine }}</td>
-              <td>{{ $results->fn_cosine }}</td>
-              <td>{{ $results->fp_cosine }}</td>
-              <td>{{ round($results->recall_cosine,2) }}%</td>
-              <td>{{ round($results->precision_cosine,2) }}%</td>
-            @endforeach
-            </tr>
-           </table>
         <hr>
         <h4>
         {{ $total_cos }} results found for: <span class="text-navy">{{ $keyword }}</span>
@@ -94,28 +72,6 @@
 
     <div class="col-lg-6">
       <h4>Jaccard Similarity</h4>
-      <table class="table table-striped">
-        <tr>
-          <th>Keyword</th>
-          <th>Dokumen ditemukan</th>
-          <th>TP</th>
-          <th>FN</th>
-          <th>FP</th>
-          <th>Recall</th>
-          <th>Precision</th>
-        </tr>
-        <tr>
-            @foreach($result as $results)
-              <td>{{ $results->keyword }}</td>
-              <td>{{ $results->total_jaccad }}</td>
-              <td>{{ $results->tp_jaccard }}</td>
-              <td>{{ $results->fn_jaccard }}</td>
-              <td>{{ $results->fp_jaccard }}</td>
-              <td>{{ round($results->recall_jaccard,2) }}%</td>
-              <td>{{ round($results->precision_jaccard,2) }}%</td>
-            @endforeach
-        </tr>
-      </table>
     <hr>
       <h4>
       {{ $total_jac }} results found for: <span class="text-navy">{{ $keyword }}</span>

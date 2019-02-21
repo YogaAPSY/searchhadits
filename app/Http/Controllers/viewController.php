@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Hadits;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\MainController;
-use App\Http\Controllers\TfidfController;
 use App\Http\Controllers\RecallPrecisionController;
+use App\Http\Controllers\TfidfController;
+use App\Result;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -39,8 +40,8 @@ class ViewController extends Controller
         if($request->get('search') !== NULL){
         $this->keyword = $request->get('search');
 
-        $this->cosine();
         $this->jaccard();
+        $this->cosine();
 
         $cos = $this->cos;
         $jac = $this->jac;
@@ -60,13 +61,25 @@ class ViewController extends Controller
         $this->jac = $this->data;
         $jacArr = $this->jac;
 
-        $result = Result::all();
+        $this->result->input($keyword);
+
+        $result = $this->result->getRecallAndPrecision($keyword);
 
         return view('home.result', compact('cos', 'cosArr', 'jac','jacArr','total_cos', 'total_jac', 'time_cosine','time_jaccard', 'halaman','keyword', 'result'));
         } else {
             return 'Masukan Keyword';
         }
 
+    }
+
+    public function table(){
+        $table = Result::all();
+
+        return view('home.table', compact('table'));        
+    }
+
+    public function diagram(){
+        return view('home.diagram');
     }
 
     public function cosine(){
@@ -109,7 +122,7 @@ class ViewController extends Controller
         $executionEndTime = microtime(true);
         $this->time_cosine = $executionEndTime - $executionStartTime;
 
-        $this->result->setRecallAndPrecision($this->keyword, $halaman);
+        $this->result->resultCosine($this->keyword);
     }
 
     public function jaccard(){
@@ -150,8 +163,7 @@ class ViewController extends Controller
         $executionEndTime = microtime(true);
         $this->time_jaccard = $executionEndTime - $executionStartTime;
 
-        $keyword = $this->similarity->preprocessingQuery($this->keyword);
-        $this->result->setRecallAndPrecision($this->keyword ,$halaman);
+        $this->result->resultJaccard($this->keyword);
     }
     
 }

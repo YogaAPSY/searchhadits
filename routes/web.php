@@ -20,3 +20,4 @@ Route::post('store', 'InputController@store');
 
 Route::get('/', 'ViewController@index');
 Route::get('search', 'ViewController@result');
+Route::get('diagram', 'ViewController@diagram');
