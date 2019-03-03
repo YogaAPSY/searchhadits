@@ -10,6 +10,7 @@ use App\Http\Controllers\TfidfController;
 use App\Result;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Session;
 
 class ViewController extends Controller
 {
@@ -75,11 +76,70 @@ class ViewController extends Controller
     public function table(){
         $table = Result::all();
 
-        return view('home.table', compact('table'));        
+         $n = Result::count();
+
+        if($table && $n != 0){
+            $r_cos = Result::sum('recall_cosine');
+            $recall_cosine = $r_cos/ $n; 
+
+            $r_jac = Result::sum('recall_jaccard');
+            $recall_jaccard = $r_jac/$n;
+
+            $p_cos = Result::sum('precision_cosine');
+            $precision_cosine = $p_cos/$n; 
+
+            $p_jac = Result::sum('precision_jaccard');
+            $precision_jaccard = $p_jac/$n;
+        }else{
+            $recall_cosine = 0;
+            $recall_jaccard = 0;
+
+            $precision_cosine = 0;
+            $precision_jaccard = 0;
+        }
+
+        return view('home.table', compact('table','recall_cosine', 'recall_jaccard', 'precision_cosine', 'precision_jaccard'));        
+    }
+
+    public function delete(){
+        
+        Result::truncate();
+
+        Session::flash('flash_message', 'Result telah berhasil dihapus');
+
+        return redirect('table');
     }
 
     public function diagram(){
-        return view('home.diagram');
+        $n = Result::count();
+
+        if($n != 0){
+            $r_cos = Result::sum('recall_cosine');
+            $recall_cosine = $r_cos/ $n; 
+
+            $r_jac = Result::sum('recall_jaccard');
+            $recall_jaccard = $r_jac/$n;
+
+            $p_cos = Result::sum('precision_cosine');
+            $precision_cosine = $p_cos/$n; 
+
+            $p_jac = Result::sum('precision_jaccard');
+            $precision_jaccard = $p_jac/$n;
+        }else{
+            $recall_cosine = 0;
+            $recall_jaccard = 0;
+
+            $precision_cosine = 0;
+            $precision_jaccard = 0;
+        }
+
+
+        return view('home.diagram', compact('recall_cosine', 'recall_jaccard', 'precision_cosine', 'precision_jaccard'));
+    }
+
+    public function similarityCosineJaccard(){
+        //$keyword = Result:: 
+        //$similarityCosine = $this->similarity->
     }
 
     public function cosine(){

@@ -40,69 +40,58 @@
  <div class="container bootstrap snippet" style="margin-top: 5%;">
     <div class="row">
         <div class="col-lg-12">
-        	<?php
+            <h4>Cosine Similarity</h4>
+            <table class="table table-striped">
+              <tr>
+                <th>No</th>
+                <th>Keyword</th>
+                <th>True Positive</th>
+                <th>False Positive</th>
+                <th>False Negative</th>
+                <th>Recall</th>
+                <th>Precision</th>
+              </tr>
+              <?php $i = 1; ?>
+              @foreach($table as $tables)
+                <tr>
+                    <td>{{ $i++ }}</td>
+                    <td>{{ $tables->keyword }}</td>
+                    <td>{{ $tables->tp_cosine }}</td>
+                    <td>{{ $tables->fp_cosine }}</td>
+                    <td>{{ $tables->fp_cosine }}</td>
+                    <td>{{ $tables->recall_cosine }}</td>
+                    <td>{{ $tables->precision_cosine }}</td>
+                </tr>
+              @endforeach
+            </table>
 
-	        	$dataPoints1 = array(
-				array("label"=> "Recall", "y"=> $recall_cosine ),
-				array("label"=> "Precision", "y"=> $precision_cosine),
-				array("label"=> "Time", "y"=> 40.30)
-				
-				);
-				$dataPoints2 = array(
-				array("label"=> "Recall", "y"=> $recall_jaccard),
-				array("label"=> "Precision", "y"=> $precision_jaccard),
-				array("label"=> "Time", "y"=> 100)
-				);
-			
-			?>
-
-<script>
-window.onload = function () {
- 
-var chart = new CanvasJS.Chart("chartContainer", {
-    animationEnabled: true,
-    theme: "light2",
-    title:{
-        text: "Perbandingan Cosine Similarity dan Jaccard Similarity"
-    },
-    legend:{
-        cursor: "pointer",
-        verticalAlign: "center",
-        horizontalAlign: "right",
-        itemclick: toggleDataSeries
-    },
-    data: [{
-        type: "column",
-        name: "Cosine Similarity",
-        indexLabel: "{y}",
-        yValueFormatString: "#0.##",
-        showInLegend: true,
-        dataPoints: <?php echo json_encode($dataPoints1, JSON_NUMERIC_CHECK); ?>
-    },{
-        type: "column",
-        name: "Jaccard Similarity",
-        indexLabel: "{y}",
-        yValueFormatString: "#0.##",
-        showInLegend: true,
-        dataPoints: <?php echo json_encode($dataPoints2, JSON_NUMERIC_CHECK); ?>
-    }]
-});
-chart.render();
- 
-function toggleDataSeries(e){
-    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-        e.dataSeries.visible = false;
-    }
-    else{
-        e.dataSeries.visible = true;
-    }
-    chart.render();
-}
- 
-}
-</script>
-<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+            <h4>Jaccard Similarity</h4>
+            <table class="table table-striped">
+              <tr>
+                <th>No</th>
+                <th>Keyword</th>
+                <th>True Positive</th>
+                <th>False Positive</th>
+                <th>False Negative</th>
+                <th>Recall</th>
+                <th>Precision</th>
+              </tr>
+              <?php $i = 1; ?>
+              @foreach($table as $tables)
+                <tr>
+                    <td>{{ $i++ }}</td>
+                    <td>{{ $tables->keyword }}</td>
+                    <td>{{ $tables->tp_jaccard }}</td>
+                    <td>{{ $tables->fp_jaccard }}</td>
+                    <td>{{ $tables->fp_jaccard }}</td>
+                    <td>{{ $tables->recall_jaccard }}</td>
+                    <td>{{ $tables->precision_jaccard }}</td>
+                </tr>
+              @endforeach
+            </table>
         </div>
+
+
     </div>
 </div>
 @endsection

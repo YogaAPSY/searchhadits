@@ -21,8 +21,8 @@ class recallPrecisionController extends Controller
     public $FN_jac;
     public $recall_jac;
     public $precision_jac;
-    public $totalRelevanCos;
-    public $totalRelevanJac;
+    public $totalRelevanCos = 0;
+    public $totalRelevanJac = 0;
     public $cosArr;
     public $jacArr;
     public $rank_cosine = [];
@@ -101,10 +101,12 @@ class recallPrecisionController extends Controller
     }
 
     public function totalRelevanCosine($index){
+        $this->totalRelevanCos = 0;
         $this->totalRelevanCos = Hadits::where('index', $index)->count();
     }
 
     public function totalRelevanJaccard($index){
+        $this->totalRelevanJac = 0;
         $this->totalRelevanJac = Hadits::where('index', $index)->count();
     }
 
@@ -177,8 +179,8 @@ class recallPrecisionController extends Controller
             $result->recall_jaccard = $this->recall_jac;
             $result->precision_cosine = $this->precision_cos;
             $result->precision_jaccard = $this->precision_jac;
-            $result->total_cosine = $this->total_cos;
-            $result->total_jaccard = $this->total_jac;
+            $result->total_cosine = $this->totalRelevanCos;
+            $result->total_jaccard = $this->totalRelevanJac;
 
             $result->save();
         }
