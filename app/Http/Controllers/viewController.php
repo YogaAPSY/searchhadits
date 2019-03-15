@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\RecallPrecisionController;
 use App\Http\Controllers\TfidfController;
+use App\Jaccard;
 use App\Result;
+use App\Similarity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Session;
@@ -24,6 +26,8 @@ class ViewController extends Controller
     public $jac;
     public $time_cosine;
     public $time_jaccard;
+    public $averageCosine;
+    public $averageJaccard;
     private $similarity;
 
     private $requestObj;
@@ -73,6 +77,38 @@ class ViewController extends Controller
 
     }
 
+      public function similarity(){
+        $cosine = Similarity::paginate(10, ['*'], 'page1');
+        $jaccard = Jaccard::paginate(10, ['*'], 'page2');
+
+        $n_cos = Similarity::count();
+
+        if($n_cos != 0){
+            $total_cos = Similarity::sum('cosine_similarity');
+            $this->averageCosine = $total_cos / $n_cos;
+        }else{
+            $total_cos = 0;
+            $this->averageCosine = 0;
+        }
+        $averageCosine = $this->averageCosine;
+
+        $n_jac = Jaccard::count();
+        if($n_jac != 0 ){                    
+            $total_jac = Jaccard::sum('jaccard_similarity');
+            $this->averageJaccard = $total_jac / $n_jac;
+        }else{
+            $total_jac = 0;
+            $this->averageJaccard = 0;
+        }
+        $averageJaccard = $this->averageJaccard;
+
+        $cosine->render();
+        $jaccard->render();
+
+        return view('home.similarity', compact('cosine', 'jaccard', 'averageJaccard', 'averageCosine'));
+    }
+
+
     public function table(){
         $table = Result::all();
 
@@ -101,46 +137,48 @@ class ViewController extends Controller
         return view('home.table', compact('table','recall_cosine', 'recall_jaccard', 'precision_cosine', 'precision_jaccard'));        
     }
 
-    public function delete(){
-        
-        Result::truncate();
-
-        Session::flash('flash_message', 'Result telah berhasil dihapus');
-
-        return redirect('table');
-    }
 
     public function diagram(){
         $n = Result::count();
 
+        $averageCosine = $this->averageCosine * 100;
+        $averageJaccard = $this->averageJaccard * 100;
+
+        var_dump($this->averageCosine);
+
         if($n != 0){
             $r_cos = Result::sum('recall_cosine');
-            $recall_cosine = $r_cos/ $n; 
+            $recall_cosine = $r_cos/ $n;
 
             $r_jac = Result::sum('recall_jaccard');
             $recall_jaccard = $r_jac/$n;
+
+            $t_cos = Result::sum('time_cosine');
+            $time_cos = $t_cos/$n;
 
             $p_cos = Result::sum('precision_cosine');
             $precision_cosine = $p_cos/$n; 
 
             $p_jac = Result::sum('precision_jaccard');
             $precision_jaccard = $p_jac/$n;
+
+            $t_jac = Result::sum('time_jaccard');
+            $time_jac = $t_jac/$n;
         }else{
             $recall_cosine = 0;
             $recall_jaccard = 0;
 
             $precision_cosine = 0;
             $precision_jaccard = 0;
+
+            $time_cos = 0;
+            $time_jac = 0;
         }
 
 
-        return view('home.diagram', compact('recall_cosine', 'recall_jaccard', 'precision_cosine', 'precision_jaccard'));
+        return view('home.diagram', compact('recall_cosine', 'recall_jaccard', 'precision_cosine', 'precision_jaccard', 'time_cos', 'time_jac', 'averageJaccard', 'averageCosine'));
     }
 
-    public function similarityCosineJaccard(){
-        //$keyword = Result:: 
-        //$similarityCosine = $this->similarity->
-    }
 
     public function cosine(){
         $executionStartTime = microtime(true);
@@ -182,7 +220,7 @@ class ViewController extends Controller
         $executionEndTime = microtime(true);
         $this->time_cosine = $executionEndTime - $executionStartTime;
 
-        $this->result->resultCosine($this->keyword);
+        $this->result->resultCosine($this->keyword , $this->total_cos, $this->time_cosine);
     }
 
     public function jaccard(){
@@ -223,7 +261,26 @@ class ViewController extends Controller
         $executionEndTime = microtime(true);
         $this->time_jaccard = $executionEndTime - $executionStartTime;
 
-        $this->result->resultJaccard($this->keyword);
+        $this->result->resultJaccard($this->keyword, $this->total_jac, $this->time_jaccard);
     }
     
+    public function deleteResult(){
+        
+        Result::truncate();
+
+        Session::flash('flash_message', 'Result telah berhasil dihapus');
+
+        return redirect('table');
+    }
+
+    public function deleteSimilarity(){
+
+        Similarity::truncate();
+        Jaccard::truncate();
+
+        Session::flash('message', 'Similarity telah berhasil dihapus');
+
+        return redirect('similarity');
+    }
 }
+        

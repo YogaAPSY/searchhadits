@@ -14,7 +14,8 @@
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
         "sastrawi/sastrawi": "^1",
-        "twbs/bootstrap": "4.1.3"
+        "twbs/bootstrap": "4.1.3",
+        "yajra/laravel-datatables-oracle": "^8.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

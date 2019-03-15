@@ -28,8 +28,8 @@
         <div class="col-lg-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">    
-              <li class="breadcrumb-item active" aria-current="page"><a href="{{ url ('search') }}">Similarity</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('table') }}">Table Rank</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="{{ url ('similarity') }}">Similarity</a></li>
+              <li class="breadcrumb-item"><a href="{{ url('table') }}">Result</a></li>
               <li class="breadcrumb-item active" aria-current="page"><a href="{{ url('diagram') }}">Diagram</a></li>
             </ol>
           </nav>          
@@ -37,7 +37,7 @@
       </div>
     </div>
     <br>
- <div class="container bootstrap snippet" style="margin-top: 5%;">
+ <div class="container bootstrap snippet">
     <div class="row">
         <div class="col-lg-12">
         	<?php
@@ -45,13 +45,15 @@
 	        	$dataPoints1 = array(
 				array("label"=> "Recall", "y"=> $recall_cosine ),
 				array("label"=> "Precision", "y"=> $precision_cosine),
-				array("label"=> "Time", "y"=> 40.30)
+				array("label"=> "Time", "y"=> $time_cos),
+                array("label"=> "Similarity", "y"=>$averageCosine)
 				
 				);
 				$dataPoints2 = array(
 				array("label"=> "Recall", "y"=> $recall_jaccard),
 				array("label"=> "Precision", "y"=> $precision_jaccard),
-				array("label"=> "Time", "y"=> 100)
+				array("label"=> "Time", "y"=> $time_jac),
+                array("label"=> "Similarity", "y"=>$averageJaccard)
 				);
 			
 			?>

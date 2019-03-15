@@ -29,13 +29,17 @@ class recallPrecisionController extends Controller
     public $rank_jaccard = [];
     public $total_cos;
     public $total_jac;
+    public $time_cos;
+    public $time_jac;
   	private $similarity;
 
   	public function __construct(){
         $this->similarity = new MainController(); 
     }
 
-    public function resultCosine($keyword){
+    public function resultCosine($keyword, $total, $time){
+        $this->time_cos = $time;
+        $this->total_cos = $total;
         $keywords = $this->similarity->preprocessingQuery($keyword);
         $this->rank_cosine = $this->similarity->init($keyword, 'cosine');
             $this->total_cos = count($this->rank_cosine);
@@ -56,7 +60,9 @@ class recallPrecisionController extends Controller
             $this->PrecisionCosine();
     }
 
-    public function resultJaccard($keyword){
+    public function resultJaccard($keyword, $total, $time){
+        $this->time_jac = $time;
+        $this->total_jac = $total;
         $keywords = $this->similarity->preprocessingQuery($keyword);
         $this->rank_jaccard = $this->similarity->init($keyword, 'jaccard');
             $this->total_jac = count($this->rank_jaccard);
@@ -179,8 +185,10 @@ class recallPrecisionController extends Controller
             $result->recall_jaccard = $this->recall_jac;
             $result->precision_cosine = $this->precision_cos;
             $result->precision_jaccard = $this->precision_jac;
-            $result->total_cosine = $this->totalRelevanCos;
-            $result->total_jaccard = $this->totalRelevanJac;
+            $result->total_cosine = $this->total_cos;
+            $result->total_jaccard = $this->total_jac;
+            $result->time_cosine = $this->time_cos;
+            $result->time_jaccard = $this->time_jac;
 
             $result->save();
         }

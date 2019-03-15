@@ -7,6 +7,9 @@ use App\Http\Controllers\CosineSimilarityController;
 use App\Http\Controllers\PreprocessingController;
 use App\Http\Controllers\TfidfController;
 use App\Http\Controllers\ViewController;
+use App\Jaccard;
+use App\Similarity;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -36,13 +39,15 @@ class MainController extends Controller
         if($similarity == 'cosine'){
             $this->cosSimilarity();
             $this->rankingCosine();
+            $this->inputCosineSimilarity($keyword);
 
             return $this->rank_cosine;
 
         }elseif($similarity == 'jaccard') {
             $this->jacSimilarity();
             $this->rankingJaccard();
-            //print_r($this->jaccard_result);
+            $this->inputJaccardSimilarity($keyword);
+
             return $this->rank_jaccard;
         }
     }
@@ -95,6 +100,7 @@ class MainController extends Controller
 
     public function rankingCosine(){
         $doc = $this->cosine_result;
+        // var_dump($doc);
         arsort($doc);
         foreach ($doc as $keys => $val) {
             if($doc[$keys] > 0.5){
@@ -106,6 +112,7 @@ class MainController extends Controller
 
     public function rankingJaccard(){
         $doc = $this->jaccard_result;
+
         arsort($doc);
         foreach ($doc as $key => $val) {
             if($doc[$key] > 0.5){
@@ -113,6 +120,48 @@ class MainController extends Controller
             }
         }
         //print_r($this->rank_jaccard);
+    }
+
+    public function inputCosineSimilarity($keyword){
+        $results = Similarity::where('keyword', $keyword)->get();
+        $doc = $this->cosine_result; 
+        arsort($doc);
+        if(!count($results)){
+
+            foreach ($doc as $keys => $values) {
+            $input[] = [
+                'keyword' => $keyword,
+                'id_document' => $keys+1,
+                'cosine_similarity' => $doc[$keys]
+            ];
+
+            }
+
+            Similarity::insert($input);
+        
+        }
+    }
+
+        public function inputJaccardSimilarity($keyword){
+        $results = Jaccard::where('keyword', $keyword)->get();
+        $doc = $this->jaccard_result;
+        arsort($doc);
+        $time = Carbon::now();
+        if(!count($results)){
+
+            foreach ($doc as $keys => $values) {
+            $input[] = [
+                'keyword' => $keyword,
+                'id_document' => $keys+1,
+                'jaccard_similarity' => $doc[$keys],
+                'created_at' => $time,
+                'updated_at'=> $time
+            ];
+
+            }
+            Jaccard::insert($input);
+        
+        }
     }
 
 }

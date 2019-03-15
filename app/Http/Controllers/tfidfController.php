@@ -117,8 +117,6 @@ class TfidfController extends Controller
             $this->docVector[$key] = $squareWeight;
             $squareWeight = 0;
 
-           //print_r($this->docVector[$key] . "<br>");
-
         }
 
     }

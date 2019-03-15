@@ -26,10 +26,16 @@
  <div class="container">
       <div class="row">
         <div class="col-lg-12">
+           @if(Session::has('message'))
+        <div class="alert alert-success">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {{ Session::get('message') }}
+        </div>
+        @endif
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">    
-              <li class="breadcrumb-item active" aria-current="page"><a href="{{ url ('search') }}">Similarity</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('table') }}">Table Rank</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="{{ url ('similarity') }}">Similarity</a></li>
+              <li class="breadcrumb-item"><a href="{{ url('table') }}">Result</a></li>
               <li class="breadcrumb-item active" aria-current="page"><a href="{{ url('diagram') }}">Diagram</a></li>
             </ol>
           </nav>          
@@ -37,7 +43,7 @@
       </div>
     </div>
     <br>
- <div class="container bootstrap snippet" style="margin-top: 5%;">
+ <div class="container bootstrap snippet">
     <div class="row">
         <div class="col-lg-12">
             <h4>Cosine Similarity</h4>
@@ -45,52 +51,67 @@
               <tr>
                 <th>No</th>
                 <th>Keyword</th>
-                <th>True Positive</th>
-                <th>False Positive</th>
-                <th>False Negative</th>
-                <th>Recall</th>
-                <th>Precision</th>
+                <th>id dokumen</th>
+                <th>Cosine Similarity</th>
               </tr>
               <?php $i = 1; ?>
-              @foreach($table as $tables)
+              @foreach($cosine as $cosines)
                 <tr>
-                    <td>{{ $i++ }}</td>
-                    <td>{{ $tables->keyword }}</td>
-                    <td>{{ $tables->tp_cosine }}</td>
-                    <td>{{ $tables->fp_cosine }}</td>
-                    <td>{{ $tables->fp_cosine }}</td>
-                    <td>{{ $tables->recall_cosine }}</td>
-                    <td>{{ $tables->precision_cosine }}</td>
+                    <td>{{ $cosines->id }}</td>
+                    <td>{{ $cosines->keyword }}</td>
+                    <td>{{ $cosines->id_document }}</td>
+                    <td>{{ $cosines->cosine_similarity }}</td>
                 </tr>
               @endforeach
+              <tr>
+                <th>Rata-rata</th>
+                <td> </td>
+                <td> </td>
+                <td>{{ $averageCosine}}</td>
+              </tr>
             </table>
+
+            <div class="text-center">
+              <div class="table-nav">
+                 <div class="paging">
+                    {{ $cosine->links() }}
+                 </div>
+               </div>
+            </div>
 
             <h4>Jaccard Similarity</h4>
             <table class="table table-striped">
-              <tr>
+               <tr>
                 <th>No</th>
                 <th>Keyword</th>
-                <th>True Positive</th>
-                <th>False Positive</th>
-                <th>False Negative</th>
-                <th>Recall</th>
-                <th>Precision</th>
+                <th>id dokumen</th>
+                <th>Jaccard Similarity</th>
               </tr>
               <?php $i = 1; ?>
-              @foreach($table as $tables)
+              @foreach($jaccard as $jaccards)
                 <tr>
-                    <td>{{ $i++ }}</td>
-                    <td>{{ $tables->keyword }}</td>
-                    <td>{{ $tables->tp_jaccard }}</td>
-                    <td>{{ $tables->fp_jaccard }}</td>
-                    <td>{{ $tables->fp_jaccard }}</td>
-                    <td>{{ $tables->recall_jaccard }}</td>
-                    <td>{{ $tables->precision_jaccard }}</td>
+                    <td>{{ $jaccards->id }}</td>
+                    <td>{{ $jaccards->keyword }}</td>
+                    <td>{{ $jaccards->id_document }}</td>
+                    <td>{{ $jaccards->jaccard_similarity }}</td>
                 </tr>
               @endforeach
+                <tr>
+                <th>Rata-rata</th>
+                <td> </td>
+                <td> </td>
+                <td>{{ $averageJaccard}}</td>
+              </tr>
             </table>
+            <div class="text-center">
+              <div class="table-nav">
+                 <div class="paging">
+                    {{ $jaccard->links() }}
+                 </div>
+               </div>
+            </div>
         </div>
-
+        <a href="{{ url('deleteSimilarity')}} " class="btn btn-md btn-danger">Delete All Similarity</a>
 
     </div>
 </div>

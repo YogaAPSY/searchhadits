@@ -28,8 +28,8 @@
         <div class="col-lg-12">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">    
-              <li class="breadcrumb-item active" aria-current="page"><a href="{{ url ('search') }}">Similarity</a></li>
-              <li class="breadcrumb-item"><a href="{{ url('table') }}">Table Rank</a></li>
+              <li class="breadcrumb-item active" aria-current="page"><a href="{{ url ('similarity') }}">Similarity</a></li>
+              <li class="breadcrumb-item"><a href="{{ url('table') }}">Result</a></li>
               <li class="breadcrumb-item active" aria-current="page"><a href="{{ url('diagram') }}">Diagram</a></li>
             </ol>
           </nav>          
@@ -60,8 +60,8 @@
           </tr>
           <tr>
             <th class="warning">Not Retrieved</th>
-            <th>TN</th>
             <th>FN</th>
+            <th>TN</th>
           </tr>
         </table>
         <h4>TP : True Positive</h4>
@@ -169,7 +169,7 @@
               </tr>
             </table>
         </div>
-        <a href="{{ url('delete')}} " class="btn btn-md btn-danger">Delete All Result</a>
+        <a href="{{ url('deleteResult')}} " class="btn btn-md btn-danger">Delete All Result</a>
     </div>
 </div>
 @endsection
