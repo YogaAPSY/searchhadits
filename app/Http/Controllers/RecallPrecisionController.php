@@ -11,24 +11,24 @@ use Illuminate\Support\Facades\DB;
 
 class recallPrecisionController extends Controller
 {
-    public $TP_cos;
-    public $FP_cos;
-    public $FN_cos;
-    public $recall_cos;
-    public $precision_cos;
-    public $TP_jac;
-    public $FP_jac;
-    public $FN_jac;
-    public $recall_jac;
-    public $precision_jac;
-    public $totalRelevanCos = 0;
-    public $totalRelevanJac = 0;
-    public $cosArr;
-    public $jacArr;
-    public $rank_cosine = [];
-    public $rank_jaccard = [];
-    public $total_cos;
-    public $total_jac;
+    private $TP_cos;
+    private $FP_cos;
+    private $FN_cos;
+    private $recall_cos;
+    private $precision_cos;
+    private $TP_jac;
+    private $FP_jac;
+    private $FN_jac;
+    private $recall_jac;
+    private $precision_jac;
+    private $totalRelevanCos;
+    private $totalRelevanJac;
+    private $cosArr;
+    private $jacArr;
+    private $rank_cosine = [];
+    private $rank_jaccard = [];
+    private $total_cos;
+    private $total_jac;
     public $time_cos;
     public $time_jac;
   	private $similarity;
@@ -82,7 +82,7 @@ class recallPrecisionController extends Controller
             $this->PrecisionJaccard();
     }
 
-    public function getRecallAndPrecision($keyword){
+/*    public function getRecallAndPrecision($keyword){
     	return [
             'keyword' => $keyword,
     		'tp_cosine' => $this->TP_cos,
@@ -94,45 +94,43 @@ class recallPrecisionController extends Controller
     		'recall_cosine' => $this->recall_cos,
     		'recall_jaccard' => $this->recall_jac,
     		'precision_cosine' => $this->precision_cos,
-    		'precision_jaccard' => $this->precision_jac
+    		'precision_jaccard' => $this->precision_jac,
     	];
     }
-
-    public function tpCosine($index){
+*/
+    private function tpCosine($index){
         $this->TP_cos = Hadits::where('index', $index)->whereIn('id', $this->rank_cosine)->count();
     }
 
-    public function tpJaccard($index){
+    private function tpJaccard($index){
         $this->TP_jac = Hadits::where('index', $index)->whereIn('id', $this->rank_jaccard)->count();
     }
 
-    public function totalRelevanCosine($index){
-        $this->totalRelevanCos = 0;
+    private function totalRelevanCosine($index){
         $this->totalRelevanCos = Hadits::where('index', $index)->count();
     }
 
-    public function totalRelevanJaccard($index){
-        $this->totalRelevanJac = 0;
+    private function totalRelevanJaccard($index){
         $this->totalRelevanJac = Hadits::where('index', $index)->count();
     }
 
-    public function fnCosine(){
+    private function fnCosine(){
 		$this->FN_cos = $this->totalRelevanCos - $this->TP_cos;
     }
 
-    public function fnJaccard(){
+    private function fnJaccard(){
         $this->FN_jac = $this->totalRelevanJac - $this->TP_jac;
     }
 
-    public function fpCosine(){
+    private function fpCosine(){
     	$this->FP_cos = $this->total_cos - $this->TP_cos;
     }
 
-    public function fpJaccard(){
+    private function fpJaccard(){
         $this->FP_jac = $this->total_jac - $this->TP_jac;
     }
 
-    public function RecallCosine(){
+    private function RecallCosine(){
 
 		if($this->TP_cos != 0){
 			$this->recall_cos =  ($this->TP_cos / ($this->TP_cos + $this->FN_cos)) * 100;
@@ -141,7 +139,7 @@ class recallPrecisionController extends Controller
 		}
     }
 
-    public function RecallJaccard(){
+    private function RecallJaccard(){
         if($this->TP_jac != 0){
             $this->recall_jac =  ($this->TP_jac / ($this->TP_jac + $this->FN_jac)) * 100;
         }else{
@@ -149,7 +147,7 @@ class recallPrecisionController extends Controller
         }
     }
 
-    public function PrecisionCosine(){
+    private function PrecisionCosine(){
  
 		if($this->TP_cos != 0){
 			$this->precision_cos = ($this->TP_cos / ($this->TP_cos + $this->FP_cos)) * 100;
@@ -158,7 +156,7 @@ class recallPrecisionController extends Controller
 		}
     }
 
-    public function PrecisionJaccard(){
+    private function PrecisionJaccard(){
         if($this->TP_jac != 0){
             $this->precision_jac = ($this->TP_jac / ($this->TP_jac + $this->FP_jac)) * 100;
         }else{

@@ -46,6 +46,10 @@
           {{ Session::get('flash_message') }}
         </div>
         @endif
+        <h4>TP : True Positive ( Dokumen Relevan dan dikembalikan )</h4>
+        <h4>FP : False Positive ( Dokumen Tidak Relevan dan dikembalikan</h4>
+        <h4>FN : False Negative ( Dokumen Relevan dan tidak dikembalikan )</h4>
+        <hr>
         <h2>Confusion Matrix</h2>
         <table class="table table-bordered">
           <tr>
@@ -64,11 +68,10 @@
             <th>TN</th>
           </tr>
         </table>
-        <h4>TP : True Positive</h4>
-        <h4>FP : False Positive</h4>
-        <h4>FN : False Negative</h4>
       </div>
+
         <div class="col-lg-12">
+             <hr>
             <h4>Cosine Similarity</h4>
             <table class="table table-striped">
               <tr>
@@ -101,7 +104,7 @@
                     <td>{{ $tables->total_cosine }}</td>
                     <td>{{ $tables->tp_cosine }}</td>
                     <td>{{ $tables->fp_cosine }}</td>
-                    <td>{{ $tables->fp_cosine }}</td>
+                    <td>{{ $tables->fn_cosine }}</td>
                     <td>{{ $tables->recall_cosine }}</td>
                     <td>{{ $tables->precision_cosine }}</td>
                 </tr>
@@ -151,7 +154,7 @@
                     <td>{{ $tables->total_jaccard }}</td>
                     <td>{{ $tables->tp_jaccard }}</td>
                     <td>{{ $tables->fp_jaccard }}</td>
-                    <td>{{ $tables->fp_jaccard }}</td>
+                    <td>{{ $tables->fn_jaccard }}</td>
                     <td>{{ $tables->recall_jaccard }}</td>
                     <td>{{ $tables->precision_jaccard }}</td>
                 </tr>

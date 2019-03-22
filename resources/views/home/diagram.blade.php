@@ -45,15 +45,15 @@
 	        	$dataPoints1 = array(
 				array("label"=> "Recall", "y"=> $recall_cosine ),
 				array("label"=> "Precision", "y"=> $precision_cosine),
-				array("label"=> "Time", "y"=> $time_cos),
-                array("label"=> "Similarity", "y"=>$averageCosine)
+				array("label"=> "Similarity", "y"=>$averageCosine),
+                array("label"=> "Time", "y"=> $time_cos)
 				
 				);
 				$dataPoints2 = array(
 				array("label"=> "Recall", "y"=> $recall_jaccard),
 				array("label"=> "Precision", "y"=> $precision_jaccard),
-				array("label"=> "Time", "y"=> $time_jac),
-                array("label"=> "Similarity", "y"=>$averageJaccard)
+                array("label"=> "Similarity", "y"=>$averageJaccard),
+				array("label"=> "Time", "y"=> $time_jac)
 				);
 			
 			?>

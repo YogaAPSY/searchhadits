@@ -7,9 +7,7 @@ use Illuminate\Http\Request;
 
 class CosineSimilarityController extends Controller
 {
-    public function __construct(){
-        $this->data = new DataEntityController();
-    }
+
     private $cosSimilarity = [];
     
     public function cos($documents, $docVector, $vectorQuery, $dotProduct){

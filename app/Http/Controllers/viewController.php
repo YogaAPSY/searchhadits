@@ -17,17 +17,17 @@ use Session;
 class ViewController extends Controller
 {
  
-    public $keyword = [];
-    public $total_cos;
-    public $total_jac;
-    public $rank_cosine = [];
-    public $rank_jaccard = [];
-    public $cos;
-    public $jac;
-    public $time_cosine;
-    public $time_jaccard;
-    public $averageCosine;
-    public $averageJaccard;
+    private $keyword = [];
+    private $total_cos;
+    private $total_jac;
+    private $rank_cosine = [];
+    private $rank_jaccard = [];
+    private $cos;
+    private $jac;
+    private $time_cosine;
+    private $time_jaccard;
+    private $averageCosine;
+    private $averageJaccard;
     private $similarity;
 
     private $requestObj;
@@ -68,9 +68,8 @@ class ViewController extends Controller
 
         $this->result->input($keyword);
 
-        $result = $this->result->getRecallAndPrecision($keyword);
 
-        return view('home.result', compact('cos', 'cosArr', 'jac','jacArr','total_cos', 'total_jac', 'time_cosine','time_jaccard', 'halaman','keyword', 'result'));
+        return view('home.result', compact('cos', 'cosArr', 'jac','jacArr','total_cos', 'total_jac', 'time_cosine','time_jaccard', 'halaman','keyword'));
         } else {
             return 'Masukan Keyword';
         }
@@ -141,11 +140,6 @@ class ViewController extends Controller
     public function diagram(){
         $n = Result::count();
 
-        $averageCosine = $this->averageCosine * 100;
-        $averageJaccard = $this->averageJaccard * 100;
-
-        var_dump($this->averageCosine);
-
         if($n != 0){
             $r_cos = Result::sum('recall_cosine');
             $recall_cosine = $r_cos/ $n;
@@ -174,6 +168,26 @@ class ViewController extends Controller
             $time_cos = 0;
             $time_jac = 0;
         }
+            $n_cos = Similarity::count();
+
+            if($n_cos != 0){
+                $total_cos = Similarity::sum('cosine_similarity');
+                $this->averageCosine = $total_cos / $n_cos;
+            }else{
+                $total_cos = 0;
+                $this->averageCosine = 0;
+            }
+            $averageCosine = $this->averageCosine * 100;
+
+            $n_jac = Jaccard::count();
+            if($n_jac != 0 ){                    
+                $total_jac = Jaccard::sum('jaccard_similarity');
+                $this->averageJaccard = $total_jac / $n_jac;
+            }else{
+                $total_jac = 0;
+                $this->averageJaccard = 0;
+            }
+            $averageJaccard = $this->averageJaccard * 100;
 
 
         return view('home.diagram', compact('recall_cosine', 'recall_jaccard', 'precision_cosine', 'precision_jaccard', 'time_cos', 'time_jac', 'averageJaccard', 'averageCosine'));

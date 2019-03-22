@@ -15,13 +15,12 @@ use Illuminate\Support\Facades\DB;
 
 class MainController extends Controller
 {
-	public $praprosesDocument = [];
-	public $praprosesQuery = [];
-    public $cosine_result = [];
-    public $jaccard_result = [];
-    public $rank_cosine = [];
-    public $rank_jaccard = [];
-    private $views;
+	private $praprosesDocument = [];
+	private $praprosesQuery = [];
+    private $cosine_result = [];
+    private $jaccard_result = [];
+    private $rank_cosine = [];
+    private $rank_jaccard = [];
     private $preprocessing;
     private $tfidf;
 
@@ -41,15 +40,17 @@ class MainController extends Controller
             $this->rankingCosine();
             $this->inputCosineSimilarity($keyword);
 
-            return $this->rank_cosine;
+            $hasil = $this->rank_cosine;
 
         }elseif($similarity == 'jaccard') {
             $this->jacSimilarity();
             $this->rankingJaccard();
             $this->inputJaccardSimilarity($keyword);
 
-            return $this->rank_jaccard;
+            $hasil = $this->rank_jaccard;
         }
+
+        return $hasil;
     }
 
 
@@ -80,7 +81,7 @@ class MainController extends Controller
 
     }
 
-   public function cosSimilarity(){
+   private function cosSimilarity(){
 
         $similarity = $this->tfidf->init($this->praprosesDocument, $this->praprosesQuery, "cosine");
 
@@ -90,7 +91,7 @@ class MainController extends Controller
 
     }
 
-    public function jacSimilarity(){
+    private function jacSimilarity(){
         $similarity = $this->tfidf->init($this->praprosesDocument, $this->praprosesQuery, "jaccard");
 
         $this->jaccard_result = $similarity;
@@ -98,12 +99,12 @@ class MainController extends Controller
         //print_r($this->jaccard_result);
     }
 
-    public function rankingCosine(){
+    private function rankingCosine(){
         $doc = $this->cosine_result;
         // var_dump($doc);
         arsort($doc);
         foreach ($doc as $keys => $val) {
-            if($doc[$keys] > 0.5){
+            if($doc[$keys] > 0){
                 $this->rank_cosine[] = $keys+1;
             }
         }
@@ -115,14 +116,14 @@ class MainController extends Controller
 
         arsort($doc);
         foreach ($doc as $key => $val) {
-            if($doc[$key] > 0.5){
+            if($doc[$key] > 0){
                 $this->rank_jaccard[] = $key+1;
             }
         }
         //print_r($this->rank_jaccard);
     }
 
-    public function inputCosineSimilarity($keyword){
+    private function inputCosineSimilarity($keyword){
         $results = Similarity::where('keyword', $keyword)->get();
         $doc = $this->cosine_result; 
         arsort($doc);
@@ -142,7 +143,7 @@ class MainController extends Controller
         }
     }
 
-        public function inputJaccardSimilarity($keyword){
+        private function inputJaccardSimilarity($keyword){
         $results = Jaccard::where('keyword', $keyword)->get();
         $doc = $this->jaccard_result;
         arsort($doc);

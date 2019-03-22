@@ -19,17 +19,17 @@ class PreprocessingController extends Controller
         return $stemming;
     }
 
-     public function casefolding($texts){
+     private function casefolding($texts){
         $text = strtolower($texts);
         return $text;
     }
 
-    public function tokenizing($texts){
+    private function tokenizing($texts){
         $text = preg_split('/\s+/', $texts);
         return $text;
     }
 
-    public function stopword($texts){
+    private function stopword($texts){
     $stopword = File::get('stopwords-id.txt');
     foreach ($texts as $k => $text) {
         $token = preg_split('/\s+/', $stopword);
@@ -45,7 +45,7 @@ class PreprocessingController extends Controller
 
     }
 
-    public function stemming($keyword) {
+    private function stemming($keyword) {
         $stemmerFactory = new \Sastrawi\Stemmer\StemmerFactory();
         $stemmer  = $stemmerFactory->createStemmer();
 

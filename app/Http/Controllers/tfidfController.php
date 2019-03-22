@@ -49,7 +49,7 @@ class TfidfController extends Controller
     }
 
 
-    public function tfIdfCalculator($documents,$terms){
+    private function tfIdfCalculator($documents,$terms){
         $df = [];
         $docCount = 0;
         foreach ($documents as $key => $doc) {
@@ -78,7 +78,7 @@ class TfidfController extends Controller
              
     }
 
-    public function compare($text,$_term){
+    private function compare($text,$_term){
         $term = $_term;
         $words = $text;
 
@@ -90,7 +90,7 @@ class TfidfController extends Controller
         return $_f;
     }
 
-    public function documentWeight($documents,$terms){
+    private function documentWeight($documents,$terms){
 
         foreach ($documents as $key => $doc) {
 
@@ -104,7 +104,7 @@ class TfidfController extends Controller
 
     }
 
-    public function documentVector($documents,$terms){
+    private function documentVector($documents,$terms){
         $squareWeight = 0;
 
         foreach ($documents as $key => $doc) {
@@ -121,7 +121,7 @@ class TfidfController extends Controller
 
     }
 
-    public function dotProductCalc($documents,$terms){
+    private function dotProductCalc($documents,$terms){
         $eachDot = 0;
 
         foreach ($documents as $key => $doc) {
@@ -135,10 +135,10 @@ class TfidfController extends Controller
             $eachDot = 0;
 
         }
-
+        //var_dump($this->queryWeight);
     }
 
-    public function cosineSimiliarity($documents){
+    private function cosineSimiliarity($documents){
 
         $cosine = new CosineSimilarityController();
 
@@ -149,7 +149,7 @@ class TfidfController extends Controller
 
     }
 
-    public function jaccardSimiliarity($documents){
+    private function jaccardSimiliarity($documents){
         $jaccard = new JaccardSimilarityController();
 
         $this->jacSimiliarity = $jaccard->jac($documents, $this->docVector, $this->vectorQuery, $this->dotProduct);
@@ -157,7 +157,7 @@ class TfidfController extends Controller
         return $this->jacSimiliarity;
     }
 
-    public function tfQueryCalculator($terms){
+    private function tfQueryCalculator($terms){
         $text = $terms;
         
         foreach ($terms as $term) {
@@ -165,14 +165,14 @@ class TfidfController extends Controller
         }
     }
 
-    public function queryWeightCalculator($terms){
+    private function queryWeightCalculator($terms){
 
         foreach ($terms as $term) {
             $this->queryWeight[$term] = $this->tfQuery[$term] * $this->docIdf[$term];
         }
     }
 
-    function queryVectorCalculator($terms){
+    private function queryVectorCalculator($terms){
         $squareWeight = 0;
 
         foreach ($terms as $term) {
