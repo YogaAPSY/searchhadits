@@ -30,11 +30,11 @@ class ViewController extends Controller
     private $averageJaccard;
     private $similarity;
 
-    private $requestObj;
+   
 
     public function __construct(){
         $this->similarity = new MainController();
-        $this->result = new RecallPrecisionController();
+        $this->results = new RecallPrecisionController();
     }
 
     public function index(){
@@ -55,6 +55,7 @@ class ViewController extends Controller
         $time_cosine = $this->time_cosine;
         $time_jaccard = $this->time_jaccard;
         $keyword = $this->keyword;
+        $keywords = implode(" ",$this->similarity->preprocessingQuery($keyword));
       
 
         $this->cos->appends($request->only('search'));
@@ -66,10 +67,10 @@ class ViewController extends Controller
         $this->jac = $this->data;
         $jacArr = $this->jac;
 
-        $this->result->input($keyword);
+        $this->results->input($keyword);
 
 
-        return view('home.result', compact('cos', 'cosArr', 'jac','jacArr','total_cos', 'total_jac', 'time_cosine','time_jaccard', 'halaman','keyword'));
+        return view('home.result', compact('cos', 'cosArr', 'jac','jacArr','total_cos', 'total_jac', 'time_cosine','time_jaccard', 'halaman','keyword','keywords'));
         } else {
             return 'Masukan Keyword';
         }
@@ -77,13 +78,13 @@ class ViewController extends Controller
     }
 
       public function similarity(){
-        $cosine = Similarity::paginate(10, ['*'], 'page1');
-        $jaccard = Jaccard::paginate(10, ['*'], 'page2');
+        $cosine = $this->similarity->cosine->paginate(10, ['*'], 'page1');
+        $jaccard = $this->similarity->jaccard->paginate(10, ['*'], 'page2');
 
-        $n_cos = Similarity::count();
+        $n_cos = $this->similarity->cosine->count();
 
         if($n_cos != 0){
-            $total_cos = Similarity::sum('cosine_similarity');
+            $total_cos = $this->similarity->cosine->sum('cosine_similarity');
             $this->averageCosine = $total_cos / $n_cos;
         }else{
             $total_cos = 0;
@@ -91,9 +92,9 @@ class ViewController extends Controller
         }
         $averageCosine = $this->averageCosine;
 
-        $n_jac = Jaccard::count();
+        $n_jac = $this->similarity->jaccard->count();
         if($n_jac != 0 ){                    
-            $total_jac = Jaccard::sum('jaccard_similarity');
+            $total_jac = $this->similarity->jaccard->sum('jaccard_similarity');
             $this->averageJaccard = $total_jac / $n_jac;
         }else{
             $total_jac = 0;
@@ -109,21 +110,21 @@ class ViewController extends Controller
 
 
     public function table(){
-        $table = Result::all();
+        $table = $this->results->result->all();
 
-         $n = Result::count();
+         $n = $this->results->result->count();
 
         if($table && $n != 0){
-            $r_cos = Result::sum('recall_cosine');
+            $r_cos = $this->results->result->sum('recall_cosine');
             $recall_cosine = $r_cos/ $n; 
 
-            $r_jac = Result::sum('recall_jaccard');
+            $r_jac = $this->results->result->sum('recall_jaccard');
             $recall_jaccard = $r_jac/$n;
 
-            $p_cos = Result::sum('precision_cosine');
+            $p_cos = $this->results->result->sum('precision_cosine');
             $precision_cosine = $p_cos/$n; 
 
-            $p_jac = Result::sum('precision_jaccard');
+            $p_jac = $this->results->result->sum('precision_jaccard');
             $precision_jaccard = $p_jac/$n;
         }else{
             $recall_cosine = 0;
@@ -138,25 +139,25 @@ class ViewController extends Controller
 
 
     public function diagram(){
-        $n = Result::count();
+        $n = $this->results->result->count();
 
         if($n != 0){
-            $r_cos = Result::sum('recall_cosine');
+            $r_cos = $this->results->result->sum('recall_cosine');
             $recall_cosine = $r_cos/ $n;
 
-            $r_jac = Result::sum('recall_jaccard');
+            $r_jac = $this->results->result->sum('recall_jaccard');
             $recall_jaccard = $r_jac/$n;
 
-            $t_cos = Result::sum('time_cosine');
+            $t_cos = $this->results->result->sum('time_cosine');
             $time_cos = $t_cos/$n;
 
-            $p_cos = Result::sum('precision_cosine');
+            $p_cos = $this->results->result->sum('precision_cosine');
             $precision_cosine = $p_cos/$n; 
 
-            $p_jac = Result::sum('precision_jaccard');
+            $p_jac = $this->results->result->sum('precision_jaccard');
             $precision_jaccard = $p_jac/$n;
 
-            $t_jac = Result::sum('time_jaccard');
+            $t_jac = $this->results->result->sum('time_jaccard');
             $time_jac = $t_jac/$n;
         }else{
             $recall_cosine = 0;
@@ -168,10 +169,10 @@ class ViewController extends Controller
             $time_cos = 0;
             $time_jac = 0;
         }
-            $n_cos = Similarity::count();
+            $n_cos = $this->similarity->cosine->count();
 
             if($n_cos != 0){
-                $total_cos = Similarity::sum('cosine_similarity');
+                $total_cos = $this->similarity->cosine->sum('cosine_similarity');
                 $this->averageCosine = $total_cos / $n_cos;
             }else{
                 $total_cos = 0;
@@ -179,9 +180,9 @@ class ViewController extends Controller
             }
             $averageCosine = $this->averageCosine * 100;
 
-            $n_jac = Jaccard::count();
+            $n_jac = $this->similarity->jaccard->count();
             if($n_jac != 0 ){                    
-                $total_jac = Jaccard::sum('jaccard_similarity');
+                $total_jac = $this->similarity->jaccard->sum('jaccard_similarity');
                 $this->averageJaccard = $total_jac / $n_jac;
             }else{
                 $total_jac = 0;
@@ -223,7 +224,7 @@ class ViewController extends Controller
         $this->total_cos = count($this->rank_cosine);
         //print_r($this->rank_cosine);
 
-        $this->cos = Hadits::whereIn('id', $this->rank_cosine)
+        $this->cos = $this->similarity->hadits->whereIn('id', $this->rank_cosine)
         ->orderByRaw(DB::raw("FIELD('id', $rank_cos)"))->paginate($perPage, ['*'], 'page1');
         $this->cosArr = $this->cos->toArray();
         $this->data = $this->cosArr['data'];
@@ -234,7 +235,7 @@ class ViewController extends Controller
         $executionEndTime = microtime(true);
         $this->time_cosine = $executionEndTime - $executionStartTime;
 
-        $this->result->resultCosine($this->keyword , $this->total_cos, $this->time_cosine);
+        $this->results->resultCosine($this->keyword , $this->total_cos, $this->time_cosine);
     }
 
     public function jaccard(){
@@ -265,7 +266,7 @@ class ViewController extends Controller
         $this->total_jac = count($this->rank_jaccard);
         //print_r($this->rank_jaccard);
 
-        $this->jac = Hadits::whereIn('id', $this->rank_jaccard)
+        $this->jac = $this->similarity->hadits->whereIn('id', $this->rank_jaccard)
         ->orderByRaw(DB::raw("FIELD('id', $rank_jac)"))->paginate(10, ['*'], 'page2');
         
         $this->jacArr = $this->jac->toArray();
@@ -275,12 +276,12 @@ class ViewController extends Controller
         $executionEndTime = microtime(true);
         $this->time_jaccard = $executionEndTime - $executionStartTime;
 
-        $this->result->resultJaccard($this->keyword, $this->total_jac, $this->time_jaccard);
+        $this->results->resultJaccard($this->keyword, $this->total_jac, $this->time_jaccard);
     }
     
     public function deleteResult(){
         
-        Result::truncate();
+        $this->results->result->truncate();
 
         Session::flash('flash_message', 'Result telah berhasil dihapus');
 
@@ -289,8 +290,8 @@ class ViewController extends Controller
 
     public function deleteSimilarity(){
 
-        Similarity::truncate();
-        Jaccard::truncate();
+        $this->similarity->cosine->truncate();
+        $this->similarity->jaccard->truncate();
 
         Session::flash('message', 'Similarity telah berhasil dihapus');
 

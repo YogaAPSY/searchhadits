@@ -53,7 +53,11 @@
         ?>
         <div class="search-result">
         <h3>Hadits Bukhari No.{{ $hadits->no_hadits }}</a></h3>
-    
+         @if($keywords == $hadits->index)
+           <p style="color: blue;">Relevan <span class="glyphicon glyphicon-ok"></span></p>            
+           @else
+            <p style="color: red;">Tidak Relevan</p> <span class="glyphicon glyphicon-ok"></span>
+          @endif
         <p>
         {{ str_limit($hadits->hadits_translate, 200) }}
         </p>
@@ -84,7 +88,13 @@
         ?>
       <div class="search-result">
       <h3>Hadits Bukhari No.{{ $hadits->no_hadits }}</a></h3>
-
+     
+      @if($keywords == $hadits->index)
+           <p style="color: blue;">Relevan</p> <span class="glyphicon glyphicon-ok"></span>
+           @else
+            <p style="color: red;">Tidak Relevan</p> <span class="glyphicon glyphicon-ok"></span>
+          @endif
+     
       <p>
       {{ str_limit($hadits->hadits_translate, 200) }}
       </p>

@@ -23,10 +23,16 @@ class MainController extends Controller
     private $rank_jaccard = [];
     private $preprocessing;
     private $tfidf;
+    public  $hadits;
+    public  $cosine;
+    public  $jaccard;
 
     public function __construct(){
         $this->preprocessing = new PreprocessingController();
         $this->tfidf = new TfidfController();
+        $this->hadits = new Hadits();
+        $this->cosine = new Similarity();
+        $this->jaccard = new Jaccard();
     }
 
     public function init($keyword, $similarity){
@@ -65,7 +71,7 @@ class MainController extends Controller
 
      public function preprocessingDocument(){
 
-        $document = Hadits::all();
+        $document = $this->hadits->all();
         $documents = [];
         foreach ($document as $value) {
             $documents[$value->id] = $value->hadits_translate;
@@ -124,7 +130,7 @@ class MainController extends Controller
     }
 
     private function inputCosineSimilarity($keyword){
-        $results = Similarity::where('keyword', $keyword)->get();
+        $results = $this->cosine->where('keyword', $keyword)->get();
         $doc = $this->cosine_result; 
         arsort($doc);
         if(!count($results)){
@@ -138,13 +144,13 @@ class MainController extends Controller
 
             }
 
-            Similarity::insert($input);
+            $this->cosine->insert($input);
         
         }
     }
 
         private function inputJaccardSimilarity($keyword){
-        $results = Jaccard::where('keyword', $keyword)->get();
+        $results = $this->jaccard->where('keyword', $keyword)->get();
         $doc = $this->jaccard_result;
         arsort($doc);
         $time = Carbon::now();
@@ -160,7 +166,7 @@ class MainController extends Controller
             ];
 
             }
-            Jaccard::insert($input);
+            $this->jaccard->insert($input);
         
         }
     }

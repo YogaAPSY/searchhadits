@@ -32,9 +32,11 @@ class recallPrecisionController extends Controller
     public $time_cos;
     public $time_jac;
   	private $similarity;
+    public  $result;
 
   	public function __construct(){
-        $this->similarity = new MainController(); 
+        $this->similarity = new MainController();
+        $this->result = new Result;
     }
 
     public function resultCosine($keyword, $total, $time){
@@ -99,19 +101,19 @@ class recallPrecisionController extends Controller
     }
 */
     private function tpCosine($index){
-        $this->TP_cos = Hadits::where('index', $index)->whereIn('id', $this->rank_cosine)->count();
+        $this->TP_cos = $this->similarity->hadits->where('index', $index)->whereIn('id', $this->rank_cosine)->count();
     }
 
     private function tpJaccard($index){
-        $this->TP_jac = Hadits::where('index', $index)->whereIn('id', $this->rank_jaccard)->count();
+        $this->TP_jac = $this->similarity->hadits->where('index', $index)->whereIn('id', $this->rank_jaccard)->count();
     }
 
     private function totalRelevanCosine($index){
-        $this->totalRelevanCos = Hadits::where('index', $index)->count();
+        $this->totalRelevanCos = $this->similarity->hadits->where('index', $index)->count();
     }
 
     private function totalRelevanJaccard($index){
-        $this->totalRelevanJac = Hadits::where('index', $index)->count();
+        $this->totalRelevanJac = $this->similarity->hadits->where('index', $index)->count();
     }
 
     private function fnCosine(){
@@ -167,28 +169,28 @@ class recallPrecisionController extends Controller
 
     public function input($keyword){
 
-        $results = Result::where('keyword', $keyword)->get();
+        $results = $this->result->where('keyword', $keyword)->get();
 
         if(!count($results)){
-            $result = New Result();
+    
 
-            $result->keyword = $keyword;
-            $result->tp_cosine = $this->TP_cos;
-            $result->tp_jaccard = $this->TP_jac;
-            $result->fp_cosine = $this->FP_cos;
-            $result->fp_jaccard = $this->FP_jac;
-            $result->fn_cosine = $this->FN_cos;
-            $result->fn_jaccard = $this->FN_jac;
-            $result->recall_cosine = $this->recall_cos;
-            $result->recall_jaccard = $this->recall_jac;
-            $result->precision_cosine = $this->precision_cos;
-            $result->precision_jaccard = $this->precision_jac;
-            $result->total_cosine = $this->total_cos;
-            $result->total_jaccard = $this->total_jac;
-            $result->time_cosine = $this->time_cos;
-            $result->time_jaccard = $this->time_jac;
+            $this->result->keyword = $keyword;
+            $this->result->tp_cosine = $this->TP_cos;
+            $this->result->tp_jaccard = $this->TP_jac;
+            $this->result->fp_cosine = $this->FP_cos;
+            $this->result->fp_jaccard = $this->FP_jac;
+            $this->result->fn_cosine = $this->FN_cos;
+            $this->result->fn_jaccard = $this->FN_jac;
+            $this->result->recall_cosine = $this->recall_cos;
+            $this->result->recall_jaccard = $this->recall_jac;
+            $this->result->precision_cosine = $this->precision_cos;
+            $this->result->precision_jaccard = $this->precision_jac;
+            $this->result->total_cosine = $this->total_cos;
+            $this->result->total_jaccard = $this->total_jac;
+            $this->result->time_cosine = $this->time_cos;
+            $this->result->time_jaccard = $this->time_jac;
 
-            $result->save();
+            $this->result->save();
         }
     }
 }
