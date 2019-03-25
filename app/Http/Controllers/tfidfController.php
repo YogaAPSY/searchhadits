@@ -1,184 +1,248 @@
 <?php
-
 namespace App\Http\Controllers;
-
-
+use App\Hadits;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CosineSimilarityController;
 use App\Http\Controllers\JaccardSimilarityController;
+use App\Http\Controllers\PreprocessingController;
 use Illuminate\Http\Request;
-
+use Phpml\FeatureExtraction\TfIdfTransformer;
+use Phpml\FeatureExtraction\TokenCountVectorizer;
+use Phpml\Tokenization\WhitespaceTokenizer;
 class TfidfController extends Controller
 {
-    public $docTf = [];
+    public $docTf;
     public $tfIdfWeight = [];
-    public $docVector = [];
-    public $dotProduct = [];
     public $cosSimiliarity = [];
     public $jacSimiliarity = [];
     public $tfQuery;
-    public $vectorQuery;
-    public $queryWeight = [];
-    public $docIdf = [];
-    public $df = [];
-
-
+    public $queryWeight;
+    public $df;
+    public $idf;
+    public $indexterm;
+    public $tfquery_view;
+    public $tfidf = [];
+    public $queryVector=[];
+    public $dotProduct=[];
+    public $docVector=[];
 
     public function init($documents,$terms, $similarity){
-
-        $this->tfIdfCalculator($documents,$terms);
+        $this->build_index($terms);
+        $this->df();
+        $this->tfIdfCalculator($this->docTf);
         $this->tfQueryCalculator($terms);
-        $this->documentWeight($documents,$terms);
+        //$this->documentWeight($documents,$terms);
         $this->queryWeightCalculator($terms);
-        $this->documentVector($documents,$terms);
-        $this->queryVectorCalculator($terms);
-        $this->dotProductCalc($documents,$terms);
-      
+        $this->tfidf = $this->TFIDFdata();
+        $this->documentVector($this->tfidf);
+        $this->queryVector($this->tfidf);
+        $this->dotProductCalc($this->tfidf);
+        //print_r($this->tfIdfWeight);
+        print_r($this->queryWeight);
         if($similarity == 'cosine'){
             
             $this->cosineSimiliarity($documents);
-
             return $this->cosSimiliarity;
         } elseif($similarity == 'jaccard'){
          
             $this->jaccardSimiliarity($documents);
-
             return $this->jacSimiliarity;
         
         }
     }
-
-
-    private function tfIdfCalculator($documents,$terms){
-        $df = [];
-        $docCount = 0;
-        foreach ($documents as $key => $doc) {
-
-            foreach ($terms as $term) {
-                if(!isset($df[$term]))
-                    $df[$term] = 0;
-                $f = $this->compare($doc,$term);
-                $this->docTf[$key][$term] = $f;
-
-                if($f > 0)
-                    $df[$term] += 1;
-
-            }
-            $docCount += 1;
+    private function build_index($terms){
+        $document = Hadits::all();
+        $preprocessing = new PreprocessingController();
+        $documents = [];
+        foreach ($document as $key => $value) {
+            $documents[$value->id] = $value->hadits_translate;
         }
-        foreach ($terms as $term) {
-            if($df[$term] == 0){
-                $this->docIdf[$term] = 0;
-            }
-            else{
-                $this->docIdf[$term] = log10($docCount/$df[$term]);
-            }
 
+        $praprosesDocument = [];
+        foreach ($documents as $key => $value) {
+  
+            $praprosesDocument[] = $preprocessing->init($value, 'document');
         }
-             
+       /* $term = [];
+        foreach ($terms as $value) {
+            $term = $value;
+        }
+        array_push($praprosesDocument, $term);*/
+        //print_r($praprosesDocument);
+        $vectorizer = new TokenCountVectorizer(new WhitespaceTokenizer());
+
+        $vectorizer->fit($praprosesDocument);
+
+        $vectorizer->transform($praprosesDocument);
+
+         $this->tfdocuments($praprosesDocument);
+
+        $this->indexterm = $vectorizer->getVocabulary();
+
+        //print_r($this->indexterm);
     }
 
-    private function compare($text,$_term){
-        $term = $_term;
-        $words = $text;
-
-        $_f = 0;
-        foreach ($words as $word) {
-            if($word == $term)
-            $_f += 1;   
-        }
-        return $_f;
+    private function tfdocuments($arr){
+            $this->docTf = $arr;
     }
 
-    private function documentWeight($documents,$terms){
+    private function df(){
+        $index          = $this->indexterm;
+        $tfdocument     = $this->tfIdfWeight;
 
-        foreach ($documents as $key => $doc) {
+        for ($i=0; $i < count($index); $i++) { 
+            $temp = 0;
+            for ($j=0; $j < count($tfdocument); $j++) { 
+                if($tfdocument[$j][$i] > 0){
+                    $temp += 1;
+                } 
+            }
+            $df[$i] = $temp;
+        }
+        $this->df = $df;
+    }
 
-            foreach ($terms as $term) {
-                $this->tfIdfWeight[$key][$term] =
-                $this->docTf[$key][$term] *
-                $this->docIdf[$term];
+     private function TFIDFdata(){
 
+        foreach ($this->indexterm as $index => $indexvalue) {
+            $this->tfidf[$index]['index']          = $indexvalue;
+            $this->tfidf[$index]['tfquery']        = $this->tfQuery[$index];
+            $this->tfidf[$index]['df']             = $this->df[$index];
+            $this->tfidf[$index]['idf']            = $this->idf[$index];
+            $this->tfidf[$index]['tfidfquery']     = $this->queryWeight[$index];
+            $this->tfidf['tfidfquery']             = $this->queryWeight;
+            $this->tfidf['tfidfdocument']          = $this->tfIdfWeight;
+            $this->tfidf['tfview']                 = $this->tfquery_view;
+            foreach ($this->docTf as $doc => $value) {
+                $this->tfidf[$index]['tfdoc'][$doc] = $this->docTf[$doc][$index];
+            }
+            foreach ($this->docTf as $doc => $value) {
+                $this->tfidf[$index]['tfidfdoc'][$doc] = $this->docTf[$doc][$index];
             }
         }
-
+        return $this->tfidf;
     }
 
-    private function documentVector($documents,$terms){
-        $squareWeight = 0;
-
-        foreach ($documents as $key => $doc) {
-
-            foreach ($terms as $term) {
-                $squareWeight += $this->tfIdfWeight[$key][$term] *
-                $this->tfIdfWeight[$key][$term];
-            }
-
-            $this->docVector[$key] = $squareWeight;
-            $squareWeight = 0;
-
-        }
-
+    private function tfIdfCalculator($arr){
+        $val = $arr;
+        $transformer = new TfIdfTransformer($val);
+        $transformer->transform($val);
+        $this->tfIdfWeight    = $val;
+        $this->idf            = $transformer->get_idf();
+        //print_r($this->tfIdfWeight);
+        //var_dump($this->tfIdfWeight);
     }
 
-    private function dotProductCalc($documents,$terms){
-        $eachDot = 0;
-
-        foreach ($documents as $key => $doc) {
-
-            foreach ($terms as $term) {
-                $eachDot += $this->tfIdfWeight[$key][$term] *
-                $this->queryWeight[$term];
-            }
-
-            $this->dotProduct[$key] = $eachDot;
-            $eachDot = 0;
-
-        }
-        //var_dump($this->queryWeight);
-    }
 
     private function cosineSimiliarity($documents){
 
         $cosine = new CosineSimilarityController();
-
-        $this->cosSimiliarity = $cosine->cos($documents, $this->docVector, $this->vectorQuery, $this->dotProduct);
+        $this->cosSimiliarity = $cosine->cos($documents, $this->docVector, $this->queryVector, $this->dotProduct);
         
-        return $this->cosSimiliarity;
-
-
     }
-
     private function jaccardSimiliarity($documents){
+
         $jaccard = new JaccardSimilarityController();
-
-        $this->jacSimiliarity = $jaccard->jac($documents, $this->docVector, $this->vectorQuery, $this->dotProduct);
-
-        return $this->jacSimiliarity;
-    }
-
-    private function tfQueryCalculator($terms){
-        $text = $terms;
+         $this->jacSimiliarity = $jaccard->jac($documents, $this->docVector, $this->queryVector, $this->dotProduct);
         
-        foreach ($terms as $term) {
-            $this->tfQuery[$term] = $this->compare($text,$term);
-        }
     }
 
-    private function queryWeightCalculator($terms){
-
-        foreach ($terms as $term) {
-            $this->queryWeight[$term] = $this->tfQuery[$term] * $this->docIdf[$term];
+    private function tfQueryCalculator($query){
+         $tfquery = array_fill(0, count($this->indexterm), 0);
+        $tfview = [];
+        //var_dump($query);
+        foreach ($query as $query=>$valq) {
+            foreach ($this->indexterm as $index => $value) {
+                if ($value == $valq) {
+                    $tfquery[$index]+=1;
+                    $tfview[] = $index;
+                }
+            }
+            
         }
+        $this->tfQuery = $tfquery;
+        $this->tfquery_view = $tfview;
+        //var_dump($this->tfQuery);
+
+    }
+    private function queryWeightCalculator(){
+
+        $tfquery    = $this->tfQuery;
+        $idf        = $this->idf;
+        $hasil = [];
+        foreach ($tfquery as $key => $value) {
+            $hasil[] = $value*$idf[$key];
+        } 
+        $this->queryWeight = $hasil;
+    
+       // var_dump($this->queryWeight);
+
     }
 
-    private function queryVectorCalculator($terms){
-        $squareWeight = 0;
+    private function dotProductCalc($tfidf){
+        $eachDot = 0;
+        $tfidfd = $tfidf['tfidfdocument'];
+        $tfidfq = $tfidf['tfidfquery'];
 
-        foreach ($terms as $term) {
-            $squareWeight += $this->queryWeight[$term] * $this->queryWeight[$term];
-            $this->vectorQuery = $squareWeight;
+        for($i = 0; $i < count($tfidfd); $i ++ ){
+            for($j = 0; $j < count($tfidfq); $j++){
+                $eachDot += $tfidfd[$i][$j] * $tfidfq[$j];
+            }
+            $this->dotProduct[$i] = $eachDot;
+               $eachDot = 0;
         }
+/*        foreach ($tfidfd as $key => $d) {
+            foreach ($tfidfq as $keys => $q) {
+                $eachDot += $d[$key][$keys] * $tfidfq[$keys];
+            }
+               $this->dotProduct[$key] = $eachDot;
+               $eachDot = 0;
+        }*/
+       // print_r($this->dotProduct);
+
     }
 
+    private function documentVector($tfidf){
+        $eachDoc = 0;
+        $tfidfd = $tfidf['tfidfdocument'];
+        $tfidfq = $tfidf['tfidfquery'];
+        //var_dump($tfidfq);
+
+        for($i = 0; $i < count($tfidfd); $i ++ ){
+            for($j = 0; $j < count($tfidfq); $j++){
+                $eachDoc += $tfidfd[$i][$j] * $tfidfd[$i][$j];
+            }
+            $this->docVector[$i] = $eachDoc;
+               $eachDoc = 0;
+        }
+
+        //print_r($this->docVector);
+        /*foreach ($tfidfd as $key => $d) {
+            foreach ($tfidfq as $keys => $q) {
+                $eachDoc += $d[$key][$keys] * $d[$key][$keys];
+            }
+              $this->docVector[$key] = $eachDoc;
+        }*/
+    }
+
+    private function queryVector($tfidf){
+        $eachQuery = 0;
+        $tfidfd = $tfidf['tfidfdocument'];
+        $tfidfq = $tfidf['tfidfquery'];
+         for($i = 0; $i < count($tfidfd); $i ++ ){
+            for($j = 0; $j < count($tfidfq); $j++){
+                $eachQuery += $tfidfq[$j] * $tfidfq[$j];
+            }
+            $this->queryVector[$i] = $eachQuery;
+               $eachQuery = 0;
+        }
+        //print_r($this->queryVector);
+
+        /*foreach ($tfidfd as $key => $d) {
+            foreach ($tfidfq as $keys => $q) {
+                $eachQuery += $tfidfq[$key] * $tfidfq[$key];
+            }
+             $this->queryVector[$key] = $eachQuery;
+        }*/
+    }
 }

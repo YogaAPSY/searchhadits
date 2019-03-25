@@ -10,11 +10,17 @@ use Sastrawi\Stemmer\StemmerFactory;
 class PreprocessingController extends Controller
 {
 
-    public function init($text){
+    public function init($text, $tes){
         $casefolding = $this->casefolding($text);
         $tokenizing = $this->tokenizing($casefolding);
         $stopword = $this->stopword($tokenizing);
-        $stemming = $this->stemming($stopword);
+  
+        if($tes == 'text'){
+            $stemming = $this->stemming($stopword);
+        }elseif($tes = 'document'){
+            $stemming = $this->stemmingD($stopword);
+        }
+
 
         return $stemming;
     }
@@ -54,6 +60,16 @@ class PreprocessingController extends Controller
         $keywords = explode(" ", $output);
 
         return $keywords;
+    }
+
+    private function stemmingD($keyword) {
+        $stemmerFactory = new \Sastrawi\Stemmer\StemmerFactory();
+        $stemmer  = $stemmerFactory->createStemmer();
+
+        $keyword = implode(" ", $keyword);
+        $output   = $stemmer->stem($keyword);
+
+        return $output;
     }
 
 }

@@ -67,7 +67,7 @@ class ViewController extends Controller
         $this->jac = $this->data;
         $jacArr = $this->jac;
 
-        $this->results->input($keyword);
+        //$this->results->input($keyword);
 
 
         return view('home.result', compact('cos', 'cosArr', 'jac','jacArr','total_cos', 'total_jac', 'time_cosine','time_jaccard', 'halaman','keyword','keywords'));

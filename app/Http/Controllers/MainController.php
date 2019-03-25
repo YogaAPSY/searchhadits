@@ -39,30 +39,31 @@ class MainController extends Controller
 
         $this->preprocessingQuery($keyword);
         $this->preprocessingDocument();
-        //print_r($this->cosine_result);
-
+      
         if($similarity == 'cosine'){
             $this->cosSimilarity();
             $this->rankingCosine();
-            $this->inputCosineSimilarity($keyword);
-
+            //$this->inputCosineSimilarity($keyword);
+            //print_r($this->cosine_result);
             $hasil = $this->rank_cosine;
 
         }elseif($similarity == 'jaccard') {
             $this->jacSimilarity();
             $this->rankingJaccard();
-            $this->inputJaccardSimilarity($keyword);
-
+            //$this->inputJaccardSimilarity($keyword);
+            //print_r($this->jaccard_result);
             $hasil = $this->rank_jaccard;
         }
-
+         //print_r($this->cosine_result);
+         //print_r($this->jaccard_result);
+       //var_dump($this->praprosesDocument);
         return $hasil;
     }
 
 
     public function preprocessingQuery($keyword){
 
-	    $praprosesQuery = $this->preprocessing->init($keyword);
+	    $praprosesQuery = $this->preprocessing->init($keyword, 'text');
 
         $this->praprosesQuery = $praprosesQuery;
 
@@ -80,9 +81,10 @@ class MainController extends Controller
         $this->praprosesDocument = [];
         foreach ($documents as $key => $value) {
   
-            $praprosesDocument = $this->preprocessing->init($value);
+            $praprosesDocument[] = $this->preprocessing->init($value, 'document');
 
             $this->praprosesDocument []= $praprosesDocument;
+
         }
 
     }
@@ -92,9 +94,6 @@ class MainController extends Controller
         $similarity = $this->tfidf->init($this->praprosesDocument, $this->praprosesQuery, "cosine");
 
         $this->cosine_result = $similarity;
-
-        //print_r($this->cosine_result);
-
     }
 
     private function jacSimilarity(){
