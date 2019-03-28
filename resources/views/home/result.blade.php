@@ -52,8 +52,11 @@
           $hadits = (object)$hadits;
         ?>
         <div class="search-result">
-        <h3>Hadits Bukhari No.{{ $hadits->no_hadits }}</a></h3>
-         @if($keywords == $hadits->index)
+        <h3>Hadits {{ $hadits->nama_hadits }}</a></h3>
+        <?php  
+          $hadits_index = (array)$hadits->index;
+        ?>
+        @if(in_array($keyword ,$hadits_index))
            <p style="color: blue;">Relevan <span class="glyphicon glyphicon-ok"></span></p>            
            @else
             <p style="color: red;">Tidak Relevan</p> <span class="glyphicon glyphicon-ok"></span>
@@ -87,9 +90,11 @@
           $hadits = (object)$hadits;
         ?>
       <div class="search-result">
-      <h3>Hadits Bukhari No.{{ $hadits->no_hadits }}</a></h3>
-     
-      @if($keywords == $hadits->index)
+      <h3>Hadits {{ $hadits->nama_hadits }}</a></h3>
+     <?php  
+          $hadits_index = (array)$hadits->index;
+        ?>
+      @if(in_array($keyword ,$hadits_index))
            <p style="color: blue;">Relevan</p> <span class="glyphicon glyphicon-ok"></span>
            @else
             <p style="color: red;">Tidak Relevan</p> <span class="glyphicon glyphicon-ok"></span>

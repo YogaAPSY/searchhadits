@@ -8,5 +8,5 @@ class Hadits extends Model
 {
     protected $table = "hadits";
 
-    protected $fillable = [ 'no_hadits','index','hadits_translate'];
+    protected $fillable = [ 'nama_hadits','index','hadits_translate'];
 }

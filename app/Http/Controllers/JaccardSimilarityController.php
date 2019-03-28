@@ -10,7 +10,7 @@ class JaccardSimilarityController extends Controller
 
     public function jac($documents, $docVector, $vectorQuery, $dotProduct){
          foreach ($documents as $key => $doc) {
-            if ($docVector[$key] == 0)
+            if ($dotProduct[$key] == 0)
                 $this->jacSimilarity[$key] = 0;
             else{
                 $this->jacSimilarity[$key] =

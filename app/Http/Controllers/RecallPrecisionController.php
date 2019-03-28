@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\MainController;
 use App\Result;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class recallPrecisionController extends Controller
@@ -39,19 +40,21 @@ class recallPrecisionController extends Controller
         $this->result = new Result;
     }
 
-    public function resultCosine($keyword, $total, $time){
+    public function resultCosine($keyword, $total, $time, $rank){
         $this->time_cos = $time;
         $this->total_cos = $total;
         $keywords = $this->similarity->preprocessingQuery($keyword);
-        $this->rank_cosine = $this->similarity->init($keyword, 'cosine');
+        $this->rank_cosine = $rank;
             $this->total_cos = count($this->rank_cosine);
-            if(in_array("iman", $keywords)){
-                $this->tpCosine("iman");
-
-                $this->totalRelevanCosine("iman");
-            } else if (in_array("zakat", $keywords)) {
-                $this->tpCosine("zakat");
-                $this->totalRelevanCosine("zakat");
+             if(in_array("idul",$keywords) || in_array("fitri",$keywords) || in_array("idul fitri",$keywords)){
+                $this->tpCosine("idul fitri");
+                $this->totalRelevanCosine("idul fitri");
+            }elseif (in_array("jual",$keywords) || in_array("beli",$keywords) || in_array("jual beli",$keywords)) {
+                $this->tpCosine("jual beli");
+                $this->totalRelevanCosine("jual beli");
+            }elseif(in_array("fitnah", $keywords)){
+                $this->tpCosine("fitnah");
+                $this->totalRelevanCosine("fitnah");
             }else{
                 $this->TP_cos = 0;
             }
@@ -62,19 +65,24 @@ class recallPrecisionController extends Controller
             $this->PrecisionCosine();
     }
 
-    public function resultJaccard($keyword, $total, $time){
+
+    public function resultJaccard($keyword, $total, $time, $rank){
         $this->time_jac = $time;
         $this->total_jac = $total;
         $keywords = $this->similarity->preprocessingQuery($keyword);
-        $this->rank_jaccard = $this->similarity->init($keyword, 'jaccard');
+        $this->rank_jaccard = $rank;
             $this->total_jac = count($this->rank_jaccard);
-            if(in_array("iman", $keywords)){
-                $this->tpJaccard('iman');
-                $this->totalRelevanJaccard('iman');
-            } else if (in_array("zakat", $keywords)) {
-                $this->tpJaccard('zakat');
-                $this->totalRelevanJaccard('zakat');
-            }else{
+            if(in_array("idul",$keywords) || in_array("fitri",$keywords) || in_array("idul fitri",$keywords)){
+                $this->tpJaccard("idul fitri");
+                $this->totalRelevanJaccard("idul fitri");
+            }elseif (in_array("jual",$keywords) || in_array("beli",$keywords) || in_array("jual beli",$keywords)) {
+                $this->tpJaccard("jual beli");
+                $this->totalRelevanJaccard("jual beli");
+            }elseif(in_array("fitnah", $keywords)){
+                $this->tpJaccard("fitnah");
+                $this->totalRelevanJaccard("fitnah");
+            }
+            else{
                 $this->TP_jac = 0;
             }
 
@@ -101,19 +109,19 @@ class recallPrecisionController extends Controller
     }
 */
     private function tpCosine($index){
-        $this->TP_cos = $this->similarity->hadits->where('index', $index)->whereIn('id', $this->rank_cosine)->count();
+        $this->TP_cos = $this->similarity->hadits->where('index',$index)->whereIn('id',$this->rank_cosine)->count();
     }
 
     private function tpJaccard($index){
-        $this->TP_jac = $this->similarity->hadits->where('index', $index)->whereIn('id', $this->rank_jaccard)->count();
+        $this->TP_jac = $this->similarity->hadits->where('index',$index)->whereIn('id',$this->rank_jaccard)->count();
     }
 
     private function totalRelevanCosine($index){
-        $this->totalRelevanCos = $this->similarity->hadits->where('index', $index)->count();
+        $this->totalRelevanCos = $this->similarity->hadits->where('index',$index)->count();
     }
 
     private function totalRelevanJaccard($index){
-        $this->totalRelevanJac = $this->similarity->hadits->where('index', $index)->count();
+        $this->totalRelevanJac = $this->similarity->hadits->where('index',$index)->count();
     }
 
     private function fnCosine(){

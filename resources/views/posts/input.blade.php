@@ -12,8 +12,8 @@
     <form class="form-horizontal" action="{{ url('store') }}" method="post" enctype="multipart/form-data">
 
       <div class="form-group">
-        <label for="no_hadits">Nomor Hadits</label>
-        <input type="text" id="no_hadits" name="no_hadits" class="form-control">
+        <label for="nama_hadits">Nomor Hadits</label>
+        <input type="text" id="nama_hadits" name="nama_hadits" class="form-control">
       </div>
 
       <div class="form-group">
@@ -33,8 +33,4 @@
       </div>
     </form>
     </div>
-@endsection
-
-@section('scripts')
-@include('layouts.script')
 @endsection

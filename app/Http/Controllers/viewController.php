@@ -67,7 +67,7 @@ class ViewController extends Controller
         $this->jac = $this->data;
         $jacArr = $this->jac;
 
-        //$this->results->input($keyword);
+        $this->results->input($keyword);
 
 
         return view('home.result', compact('cos', 'cosArr', 'jac','jacArr','total_cos', 'total_jac', 'time_cosine','time_jaccard', 'halaman','keyword','keywords'));
@@ -81,7 +81,7 @@ class ViewController extends Controller
         $cosine = $this->similarity->cosine->paginate(10, ['*'], 'page1');
         $jaccard = $this->similarity->jaccard->paginate(10, ['*'], 'page2');
 
-        $n_cos = $this->similarity->cosine->count();
+        $n_cos = $this->total_cos;
 
         if($n_cos != 0){
             $total_cos = $this->similarity->cosine->sum('cosine_similarity');
@@ -92,7 +92,7 @@ class ViewController extends Controller
         }
         $averageCosine = $this->averageCosine;
 
-        $n_jac = $this->similarity->jaccard->count();
+        $n_jac = $this->total_jac;
         if($n_jac != 0 ){                    
             $total_jac = $this->similarity->jaccard->sum('jaccard_similarity');
             $this->averageJaccard = $total_jac / $n_jac;
@@ -197,7 +197,6 @@ class ViewController extends Controller
 
     public function cosine(){
         $executionStartTime = microtime(true);
-
         $halaman = 'cosine';
         $perPage = 10;
         $page = 1;
@@ -219,13 +218,10 @@ class ViewController extends Controller
             $rank_cosine_paginate []= $this->rank_cosine[$i];
         }
 
-        $rank_cos = implode(",",$this->rank_cosine);
-        $keyword = $this->keyword;
         $this->total_cos = count($this->rank_cosine);
         //print_r($this->rank_cosine);
-
-        $this->cos = $this->similarity->hadits->whereIn('id', $this->rank_cosine)
-        ->orderByRaw(DB::raw("FIELD('id', $rank_cos)"))->paginate($perPage, ['*'], 'page1');
+    
+        $this->cos = $this->similarity->hadits->whereIn('id', $this->rank_cosine)->paginate($perPage, ['*'], 'page1');
         $this->cosArr = $this->cos->toArray();
         $this->data = $this->cosArr['data'];
         array_multisort($rank_cosine_paginate, SORT_DESC, $this->data);
@@ -235,12 +231,12 @@ class ViewController extends Controller
         $executionEndTime = microtime(true);
         $this->time_cosine = $executionEndTime - $executionStartTime;
 
-        $this->results->resultCosine($this->keyword , $this->total_cos, $this->time_cosine);
+        $this->results->resultCosine($this->keyword , $this->total_cos, $this->time_cosine, $this->rank_cosine);
     }
 
     public function jaccard(){
+    
         $executionStartTime = microtime(true);
-
         $halaman = 'jaccard';
         $perPage = 10;
         $page = 1;
@@ -261,13 +257,11 @@ class ViewController extends Controller
             $rank_jaccard_paginate []= $this->rank_jaccard[$i];
         }
 
-        $rank_jac = implode(",",$this->rank_jaccard);
-        $keyword = $this->keyword;
         $this->total_jac = count($this->rank_jaccard);
         //print_r($this->rank_jaccard);
 
-        $this->jac = $this->similarity->hadits->whereIn('id', $this->rank_jaccard)
-        ->orderByRaw(DB::raw("FIELD('id', $rank_jac)"))->paginate(10, ['*'], 'page2');
+
+        $this->jac = $this->similarity->hadits->whereIn('id', $this->rank_jaccard)->paginate(10, ['*'], 'page2');
         
         $this->jacArr = $this->jac->toArray();
         $this->data = $this->jacArr['data'];
@@ -276,7 +270,7 @@ class ViewController extends Controller
         $executionEndTime = microtime(true);
         $this->time_jaccard = $executionEndTime - $executionStartTime;
 
-        $this->results->resultJaccard($this->keyword, $this->total_jac, $this->time_jaccard);
+        $this->results->resultJaccard($this->keyword, $this->total_jac, $this->time_jaccard, $this->rank_jaccard);
     }
     
     public function deleteResult(){

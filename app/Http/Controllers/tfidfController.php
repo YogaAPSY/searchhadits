@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Hadits;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CosineSimilarityController;
@@ -9,6 +11,7 @@ use Illuminate\Http\Request;
 use Phpml\FeatureExtraction\TfIdfTransformer;
 use Phpml\FeatureExtraction\TokenCountVectorizer;
 use Phpml\Tokenization\WhitespaceTokenizer;
+
 class TfidfController extends Controller
 {
     public $docTf;
@@ -25,9 +28,12 @@ class TfidfController extends Controller
     public $queryVector=[];
     public $dotProduct=[];
     public $docVector=[];
+    private $similarity;
+
+
 
     public function init($documents,$terms, $similarity){
-        $this->build_index($terms);
+        $this->build_index($terms, $documents);
         $this->df();
         $this->tfIdfCalculator($this->docTf);
         $this->tfQueryCalculator($terms);
@@ -37,8 +43,8 @@ class TfidfController extends Controller
         $this->documentVector($this->tfidf);
         $this->queryVector($this->tfidf);
         $this->dotProductCalc($this->tfidf);
-        //print_r($this->tfIdfWeight);
-        print_r($this->queryWeight);
+        //print_r($this->queryVector);
+
         if($similarity == 'cosine'){
             
             $this->cosineSimiliarity($documents);
@@ -50,36 +56,17 @@ class TfidfController extends Controller
         
         }
     }
-    private function build_index($terms){
-        $document = Hadits::all();
-        $preprocessing = new PreprocessingController();
-        $documents = [];
-        foreach ($document as $key => $value) {
-            $documents[$value->id] = $value->hadits_translate;
-        }
-
-        $praprosesDocument = [];
-        foreach ($documents as $key => $value) {
-  
-            $praprosesDocument[] = $preprocessing->init($value, 'document');
-        }
-       /* $term = [];
-        foreach ($terms as $value) {
-            $term = $value;
-        }
-        array_push($praprosesDocument, $term);*/
-        //print_r($praprosesDocument);
+    private function build_index($terms, $documents){
+    
         $vectorizer = new TokenCountVectorizer(new WhitespaceTokenizer());
 
-        $vectorizer->fit($praprosesDocument);
+        $vectorizer->fit($documents);
 
-        $vectorizer->transform($praprosesDocument);
+        $vectorizer->transform($documents);
 
-         $this->tfdocuments($praprosesDocument);
+        $this->tfdocuments($documents);
 
         $this->indexterm = $vectorizer->getVocabulary();
-
-        //print_r($this->indexterm);
     }
 
     private function tfdocuments($arr){
@@ -148,12 +135,13 @@ class TfidfController extends Controller
     }
 
     private function tfQueryCalculator($query){
-         $tfquery = array_fill(0, count($this->indexterm), 0);
+        $tfquery = array_fill(0, count($this->indexterm), 0);
         $tfview = [];
-        //var_dump($query);
+        
         foreach ($query as $query=>$valq) {
             foreach ($this->indexterm as $index => $value) {
                 if ($value == $valq) {
+
                     $tfquery[$index]+=1;
                     $tfview[] = $index;
                 }
@@ -162,7 +150,7 @@ class TfidfController extends Controller
         }
         $this->tfQuery = $tfquery;
         $this->tfquery_view = $tfview;
-        //var_dump($this->tfQuery);
+        //print_r($this->tfQuery);
 
     }
     private function queryWeightCalculator(){
@@ -175,7 +163,7 @@ class TfidfController extends Controller
         } 
         $this->queryWeight = $hasil;
     
-       // var_dump($this->queryWeight);
+        //print_r($this->queryWeight);
 
     }
 

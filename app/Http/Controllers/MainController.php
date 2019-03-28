@@ -11,6 +11,7 @@ use App\Jaccard;
 use App\Similarity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class MainController extends Controller
@@ -21,7 +22,7 @@ class MainController extends Controller
     private $jaccard_result = [];
     private $rank_cosine = [];
     private $rank_jaccard = [];
-    private $preprocessing;
+    public $preprocessing;
     private $tfidf;
     public  $hadits;
     public  $cosine;
@@ -43,15 +44,15 @@ class MainController extends Controller
         if($similarity == 'cosine'){
             $this->cosSimilarity();
             $this->rankingCosine();
-            //$this->inputCosineSimilarity($keyword);
+            $this->inputCosineSimilarity($keyword);
             //print_r($this->cosine_result);
             $hasil = $this->rank_cosine;
 
         }elseif($similarity == 'jaccard') {
             $this->jacSimilarity();
             $this->rankingJaccard();
-            //$this->inputJaccardSimilarity($keyword);
-            //print_r($this->jaccard_result);
+            $this->inputJaccardSimilarity($keyword);
+            // print_r($this->jaccard_result);
             $hasil = $this->rank_jaccard;
         }
          //print_r($this->cosine_result);
@@ -81,9 +82,7 @@ class MainController extends Controller
         $this->praprosesDocument = [];
         foreach ($documents as $key => $value) {
   
-            $praprosesDocument[] = $this->preprocessing->init($value, 'document');
-
-            $this->praprosesDocument []= $praprosesDocument;
+            $this->praprosesDocument[] = $this->preprocessing->init($value, 'document');
 
         }
 
@@ -168,6 +167,14 @@ class MainController extends Controller
             $this->jaccard->insert($input);
         
         }
+    }
+
+    public function caching(){
+        $value = Cache::rememberForever('hadits', function () {
+            return $this->hadits->all();
+        });
+
+        return $value;
     }
 
 }
