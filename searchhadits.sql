@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 08, 2019 at 12:07 AM
+-- Generation Time: Dec 13, 2019 at 01:19 AM
 -- Server version: 10.1.33-MariaDB
 -- PHP Version: 7.2.6
 
@@ -164,6 +164,258 @@ INSERT INTO `hadits` (`id`, `nama_hadits`, `index`, `hadits_translate`, `created
 (119, 'Ibnu Majah No 2863', 'peperangan', 'Telah menceritakan kepada kami Muhammad bin Abdullah bin Numair; telah menceritakan kepada kami Abu Al Walid; telah menceritakan kepada kami Syu\'bah; demikian juga telah diriwayatkan dari jalur yang lainnya, dan telah menceritakan kepada kami Muhammad bin Basysyar; telah menceritakan kepada kami Ibnu Abu \'Adi dari Syu\'bah dari Al A\'masy dari Abu Wa`il dari \'Abdullah, ia berkata; Rasulullah shallallahu \'alaihi wasallam bersabda: \"Akan ditancapkan pada setiap orang yang melarikan diri dari peperangan berupa bendera di hari kiamat. Dikatakan: ini adalah pengkhianatan si fulan.\"', '2019-03-27 20:39:59', '2019-03-27 20:39:59'),
 (120, 'Ibnu Majah No 2891', 'peperangan', 'Telah menceritakan kepada kami Hisyam bin \'Ammar; telah menceritakan kepada kami Syu\'aib bin Ishaq; telah menceritakan kepada kami Ibnu Juraij; telah menceritakan kepadaku \'Amru bin Dinar bahwa ia mendengar Abu Ma\'bad -mantan budak- Ibnu Abbas dari Ibnu Abbas radliallahu \'anhu, ia berkata; \"Seorang Arab Badui datang menemui Nabi shallallahu \'alaihi wasallam lantas berkata; \'Aku telah ditugaskan dalam sebuah peperangan ini dan itu, sedangkan (saat itu) istriku tengah punya hajat (yang harus dipenuhi).\' Maka beliau shallallahu \'alaihi wasallam bersabda: \'Kembalilah kamu bersamanya\'.\"', '2019-03-27 20:40:15', '2019-03-27 20:40:15');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jaccard`
+--
+
+CREATE TABLE `jaccard` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `keyword` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_document` int(11) NOT NULL,
+  `jaccard_similarity` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `jaccard`
+--
+
+INSERT INTO `jaccard` (`id`, `keyword`, `id_document`, `jaccard_similarity`, `created_at`, `updated_at`) VALUES
+(1, 'idul fitri', 7, '0.07952222803401014', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(2, 'idul fitri', 1, '0.07145738938854436', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(3, 'idul fitri', 2, '0.06770270870948537', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(4, 'idul fitri', 5, '0.06693864248517134', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(5, 'idul fitri', 14, '0.05757178408618811', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(6, 'idul fitri', 15, '0.0570779630107349', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(7, 'idul fitri', 3, '0.05516242813156573', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(8, 'idul fitri', 12, '0.052343280403510405', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(9, 'idul fitri', 8, '0.047512347172770704', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(10, 'idul fitri', 9, '0.0401918994072026', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(11, 'idul fitri', 4, '0.03875423181538794', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(12, 'idul fitri', 20, '0.03231910208229276', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(13, 'idul fitri', 11, '0.0275314349767604', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(14, 'idul fitri', 18, '0.022114283635855245', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(15, 'idul fitri', 13, '0.01690875392008984', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(16, 'idul fitri', 17, '0.015633137641517206', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(17, 'idul fitri', 24, '0.014861397181049438', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(18, 'idul fitri', 16, '0.014558604607736723', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(19, 'idul fitri', 22, '0.012251301007346258', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(20, 'idul fitri', 19, '0.010301161497865838', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(21, 'idul fitri', 6, '0.010243364156910718', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(22, 'idul fitri', 10, '0.009935542857116833', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(23, 'idul fitri', 28, '0.00955505040357084', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(24, 'idul fitri', 26, '0.008481253701548357', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(25, 'idul fitri', 23, '0.007983493823548916', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(26, 'idul fitri', 21, '0.007626966824938607', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(27, 'idul fitri', 25, '0.006949908277254378', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(28, 'idul fitri', 29, '0.006858032332058827', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(29, 'idul fitri', 27, '0.006480431997365459', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(30, 'idul fitri', 30, '0.0033175360013912867', '2019-05-23 20:19:05', '2019-05-23 20:19:05'),
+(31, 'jual beli', 48, '0.11185085926666735', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(32, 'jual beli', 56, '0.08882341889525039', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(33, 'jual beli', 57, '0.08528595907721863', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(34, 'jual beli', 43, '0.0821209131159104', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(35, 'jual beli', 53, '0.07960229097301769', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(36, 'jual beli', 54, '0.07274518662709449', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(37, 'jual beli', 39, '0.07208530752174748', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(38, 'jual beli', 60, '0.06584841579864996', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(39, 'jual beli', 34, '0.061545495205728475', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(40, 'jual beli', 32, '0.05276655548121338', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(41, 'jual beli', 37, '0.04795405162786425', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(42, 'jual beli', 36, '0.04668804006908156', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(43, 'jual beli', 35, '0.045912157754488515', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(44, 'jual beli', 59, '0.0433920710471677', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(45, 'jual beli', 40, '0.03873480373837286', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(46, 'jual beli', 52, '0.038261129157491795', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(47, 'jual beli', 46, '0.03749662366543185', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(48, 'jual beli', 45, '0.03737705306052659', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(49, 'jual beli', 42, '0.03155534948583651', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(50, 'jual beli', 33, '0.030148419427189054', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(51, 'jual beli', 44, '0.027473450140835517', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(52, 'jual beli', 58, '0.02727713293206443', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(53, 'jual beli', 31, '0.026044312241980293', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(54, 'jual beli', 51, '0.02464539834457098', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(55, 'jual beli', 38, '0.020962941106780503', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(56, 'jual beli', 49, '0.020111227382313517', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(57, 'jual beli', 41, '0.0199670412374341', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(58, 'jual beli', 55, '0.01840553809284983', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(59, 'jual beli', 47, '0.01811957655893066', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(60, 'jual beli', 50, '0.015939949167298333', '2019-05-23 20:23:56', '2019-05-23 20:23:56'),
+(61, 'jual beli', 87, '0.003451155295053373', '2019-05-23 20:23:56', '2019-05-23 20:23:56');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `migrations`
+--
+
+CREATE TABLE `migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `migrations`
+--
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(1, '2014_10_12_000000_create_users_table', 1),
+(2, '2014_10_12_100000_create_password_resets_table', 1),
+(3, '2018_12_12_111440_create_hadits_table', 1),
+(5, '2019_03_14_040314_create_similarity_table', 2),
+(6, '2019_03_14_075317_create_jaccard_table', 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_resets`
+--
+
+CREATE TABLE `password_resets` (
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `result`
+--
+
+CREATE TABLE `result` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `keyword` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tp_cosine` int(11) NOT NULL,
+  `tp_jaccard` int(11) NOT NULL,
+  `fp_cosine` int(11) NOT NULL,
+  `fp_jaccard` int(11) NOT NULL,
+  `fn_cosine` int(11) NOT NULL,
+  `fn_jaccard` int(11) NOT NULL,
+  `recall_cosine` varchar(11) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `recall_jaccard` varchar(11) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `precision_cosine` varchar(11) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `precision_jaccard` varchar(11) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_cosine` int(11) NOT NULL,
+  `total_jaccard` int(11) NOT NULL,
+  `time_cosine` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `time_jaccard` varchar(12) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `result`
+--
+
+INSERT INTO `result` (`id`, `keyword`, `tp_cosine`, `tp_jaccard`, `fp_cosine`, `fp_jaccard`, `fn_cosine`, `fn_jaccard`, `recall_cosine`, `recall_jaccard`, `precision_cosine`, `precision_jaccard`, `total_cosine`, `total_jaccard`, `time_cosine`, `time_jaccard`, `created_at`, `updated_at`) VALUES
+(1, 'idul fitri', 30, 30, 0, 0, 0, 0, '100', '100', '100', '100', 30, 30, '3.3196620941', '5.0638370514', '2019-05-23 20:12:09', '2019-05-23 20:12:09'),
+(2, 'Telah menceritakan kepadaku Yahya dari Malik dari [Nafi\'], bahwa [Abdullah bin Umar] tidak pernah shalat sunah pada hari raya Idul Fitri sebelum dan sesudahnya.\"', 0, 0, 120, 120, 0, 0, '0', '0', '0', '0', 120, 120, '3.2649919987', '3.2678508759', '2019-05-23 20:14:16', '2019-05-23 20:14:16'),
+(3, 'jual beli', 30, 30, 1, 1, 0, 0, '100', '100', '96.77419355', '96.77419355', 31, 31, '3.2337660789', '3.3095290661', '2019-05-23 20:23:59', '2019-05-23 20:23:59');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `similarity`
+--
+
+CREATE TABLE `similarity` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `id_document` int(11) NOT NULL,
+  `keyword` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cosine_similarity` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `similarity`
+--
+
+INSERT INTO `similarity` (`id`, `id_document`, `keyword`, `cosine_similarity`, `created_at`, `updated_at`) VALUES
+(1, 1, 'idul fitri', '0.31978043958228736', NULL, NULL),
+(2, 2, 'idul fitri', '0.3114468708502734', NULL, NULL),
+(3, 5, 'idul fitri', '0.3097211368302514', NULL, NULL),
+(4, 7, 'idul fitri', '0.2819968581988284', NULL, NULL),
+(5, 3, 'idul fitri', '0.2816751434702577', NULL, NULL),
+(6, 8, 'idul fitri', '0.2617265185663957', NULL, NULL),
+(7, 14, 'idul fitri', '0.2399412096455882', NULL, NULL),
+(8, 15, 'idul fitri', '0.2389099474922191', NULL, NULL),
+(9, 4, 'idul fitri', '0.2366999659497654', NULL, NULL),
+(10, 12, 'idul fitri', '0.2287865389473568', NULL, NULL),
+(11, 9, 'idul fitri', '0.20047917449750885', NULL, NULL),
+(12, 11, 'idul fitri', '0.19985581212070117', NULL, NULL),
+(13, 20, 'idul fitri', '0.17977514311576215', NULL, NULL),
+(14, 6, 'idul fitri', '0.17256957849015594', NULL, NULL),
+(15, 13, 'idul fitri', '0.15688576304005555', NULL, NULL),
+(16, 17, 'idul fitri', '0.15088222416181404', NULL, NULL),
+(17, 18, 'idul fitri', '0.14870872077943256', NULL, NULL),
+(18, 16, 'idul fitri', '0.14562918425781096', NULL, NULL),
+(19, 22, 'idul fitri', '0.13364036072929855', NULL, NULL),
+(20, 28, 'idul fitri', '0.1327973733206991', NULL, NULL),
+(21, 19, 'idul fitri', '0.12258102761253256', NULL, NULL),
+(22, 24, 'idul fitri', '0.12190733030072243', NULL, NULL),
+(23, 10, 'idul fitri', '0.12039294055736588', NULL, NULL),
+(24, 25, 'idul fitri', '0.1155292646124796', NULL, NULL),
+(25, 26, 'idul fitri', '0.11125895164854838', NULL, NULL),
+(26, 21, 'idul fitri', '0.10552113675025719', NULL, NULL),
+(27, 23, 'idul fitri', '0.08935039912361285', NULL, NULL),
+(28, 27, 'idul fitri', '0.08050113041048218', NULL, NULL),
+(29, 29, 'idul fitri', '0.07974964570364355', NULL, NULL),
+(30, 30, 'idul fitri', '0.03928619527866064', NULL, NULL),
+(31, 31, 'jual beli', '0.5750021529248781', NULL, NULL),
+(32, 48, 'jual beli', '0.5588091282047434', NULL, NULL),
+(33, 34, 'jual beli', '0.541559855695298', NULL, NULL),
+(34, 56, 'jual beli', '0.5015707285961101', NULL, NULL),
+(35, 35, 'jual beli', '0.4938621965971777', NULL, NULL),
+(36, 57, 'jual beli', '0.49202958742800285', NULL, NULL),
+(37, 43, 'jual beli', '0.48329611729628913', NULL, NULL),
+(38, 37, 'jual beli', '0.48053276216133767', NULL, NULL),
+(39, 53, 'jual beli', '0.4762063288299889', NULL, NULL),
+(40, 54, 'jual beli', '0.45622513223421285', NULL, NULL),
+(41, 39, 'jual beli', '0.4542464900587128', NULL, NULL),
+(42, 32, 'jual beli', '0.4505899201087893', NULL, NULL),
+(43, 60, 'jual beli', '0.4350148311283604', NULL, NULL),
+(44, 36, 'jual beli', '0.424775323287683', NULL, NULL),
+(45, 42, 'jual beli', '0.410877511306367', NULL, NULL),
+(46, 59, 'jual beli', '0.4087817521865381', NULL, NULL),
+(47, 33, 'jual beli', '0.40270931576030294', NULL, NULL),
+(48, 40, 'jual beli', '0.3880272307841713', NULL, NULL),
+(49, 46, 'jual beli', '0.38194748323905636', NULL, NULL),
+(50, 52, 'jual beli', '0.3345569955235843', NULL, NULL),
+(51, 45, 'jual beli', '0.3307642687542447', NULL, NULL),
+(52, 58, 'jual beli', '0.32698800408185585', NULL, NULL),
+(53, 38, 'jual beli', '0.3210699585859543', NULL, NULL),
+(54, 47, 'jual beli', '0.31235065463072914', NULL, NULL),
+(55, 51, 'jual beli', '0.3111148928013375', NULL, NULL),
+(56, 44, 'jual beli', '0.30657213140003486', NULL, NULL),
+(57, 50, 'jual beli', '0.28052845649649333', NULL, NULL),
+(58, 41, 'jual beli', '0.28051695783529', NULL, NULL),
+(59, 49, 'jual beli', '0.24399889619963125', NULL, NULL),
+(60, 55, 'jual beli', '0.23355363270109192', NULL, NULL),
+(61, 87, 'jual beli', '0.04111447636340033', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -175,6 +427,43 @@ ALTER TABLE `hadits`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `jaccard`
+--
+ALTER TABLE `jaccard`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD KEY `password_resets_email_index` (`email`);
+
+--
+-- Indexes for table `result`
+--
+ALTER TABLE `result`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `similarity`
+--
+ALTER TABLE `similarity`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `users_email_unique` (`email`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -183,6 +472,36 @@ ALTER TABLE `hadits`
 --
 ALTER TABLE `hadits`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+
+--
+-- AUTO_INCREMENT for table `jaccard`
+--
+ALTER TABLE `jaccard`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+
+--
+-- AUTO_INCREMENT for table `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `result`
+--
+ALTER TABLE `result`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `similarity`
+--
+ALTER TABLE `similarity`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
