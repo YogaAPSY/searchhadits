@@ -46,14 +46,14 @@
 				array("label"=> "Recall", "y"=> $recall_cosine ),
 				array("label"=> "Precision", "y"=> $precision_cosine),
 				array("label"=> "Similarity", "y"=>$averageCosine),
-                array("label"=> "Time", "y"=> $time_cos)
+                array("label"=> "Waktu Eksekusi", "y"=> $time_cos)
 				
 				);
 				$dataPoints2 = array(
 				array("label"=> "Recall", "y"=> $recall_jaccard),
 				array("label"=> "Precision", "y"=> $precision_jaccard),
                 array("label"=> "Similarity", "y"=>$averageJaccard),
-				array("label"=> "Time", "y"=> $time_jac)
+				array("label"=> "Waktu Eksekusi", "y"=> $time_jac)
 				);
 			
 			?>

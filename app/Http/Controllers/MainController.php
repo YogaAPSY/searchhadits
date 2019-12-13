@@ -44,20 +44,20 @@ class MainController extends Controller
         if($similarity == 'cosine'){
             $this->cosSimilarity();
             $this->rankingCosine();
-            $this->inputCosineSimilarity($keyword);
+           $this->inputCosineSimilarity($keyword);
             //print_r($this->cosine_result);
             $hasil = $this->rank_cosine;
 
         }elseif($similarity == 'jaccard') {
             $this->jacSimilarity();
             $this->rankingJaccard();
-            $this->inputJaccardSimilarity($keyword);
+           $this->inputJaccardSimilarity($keyword);
             // print_r($this->jaccard_result);
             $hasil = $this->rank_jaccard;
         }
          //print_r($this->cosine_result);
          //print_r($this->jaccard_result);
-       //var_dump($this->praprosesDocument);
+    
         return $hasil;
     }
 
@@ -73,7 +73,7 @@ class MainController extends Controller
 
      public function preprocessingDocument(){
 
-        $document = $this->hadits->all();
+        $document = $this->caching();
         $documents = [];
         foreach ($document as $value) {
             $documents[$value->id] = $value->hadits_translate;
@@ -134,12 +134,13 @@ class MainController extends Controller
         if(!count($results)){
 
             foreach ($doc as $keys => $values) {
+            if($doc[$keys] > 0){
             $input[] = [
                 'keyword' => $keyword,
                 'id_document' => $keys+1,
                 'cosine_similarity' => $doc[$keys]
             ];
-
+            }
             }
 
             $this->cosine->insert($input);
@@ -155,14 +156,15 @@ class MainController extends Controller
         if(!count($results)){
 
             foreach ($doc as $keys => $values) {
-            $input[] = [
+                  if($doc[$keys] > 0){
+                $input[] = [
                 'keyword' => $keyword,
                 'id_document' => $keys+1,
                 'jaccard_similarity' => $doc[$keys],
                 'created_at' => $time,
                 'updated_at'=> $time
-            ];
-
+                ];
+            }
             }
             $this->jaccard->insert($input);
         

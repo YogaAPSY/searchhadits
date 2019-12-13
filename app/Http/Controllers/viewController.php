@@ -55,22 +55,17 @@ class ViewController extends Controller
         $time_cosine = $this->time_cosine;
         $time_jaccard = $this->time_jaccard;
         $keyword = $this->keyword;
-        $keywords = implode(" ",$this->similarity->preprocessingQuery($keyword));
+        $keywords = $this->similarity->preprocessingQuery($keyword);
       
 
         $this->cos->appends($request->only('search'));
         $this->jac->appends($request->only('search'));
 
-        $this->cos = $this->data;
-        $cosArr = $this->cos;
 
-        $this->jac = $this->data;
-        $jacArr = $this->jac;
-
-        $this->results->input($keyword);
+       $this->results->input($keyword);
 
 
-        return view('home.result', compact('cos', 'cosArr', 'jac','jacArr','total_cos', 'total_jac', 'time_cosine','time_jaccard', 'halaman','keyword','keywords'));
+        return view('home.result', compact('cos', 'jac', 'total_cos', 'total_jac', 'time_cosine','time_jaccard', 'halaman','keyword','keywords'));
         } else {
             return 'Masukan Keyword';
         }
@@ -81,7 +76,7 @@ class ViewController extends Controller
         $cosine = $this->similarity->cosine->paginate(10, ['*'], 'page1');
         $jaccard = $this->similarity->jaccard->paginate(10, ['*'], 'page2');
 
-        $n_cos = $this->total_cos;
+        $n_cos = $this->similarity->cosine->count();
 
         if($n_cos != 0){
             $total_cos = $this->similarity->cosine->sum('cosine_similarity');
@@ -92,7 +87,7 @@ class ViewController extends Controller
         }
         $averageCosine = $this->averageCosine;
 
-        $n_jac = $this->total_jac;
+        $n_jac = $this->similarity->jaccard->count();
         if($n_jac != 0 ){                    
             $total_jac = $this->similarity->jaccard->sum('jaccard_similarity');
             $this->averageJaccard = $total_jac / $n_jac;
@@ -199,34 +194,17 @@ class ViewController extends Controller
         $executionStartTime = microtime(true);
         $halaman = 'cosine';
         $perPage = 10;
-        $page = 1;
-        if (isset($_GET['page1']))
-        {
-            $page = $_GET['page1'];
-        }
-        
+      
         $this->rank_cosine = $this->similarity->init($this->keyword, $halaman);
         $rank_cosine_paginate = [];
-        $i = $page == 1 ? 0 : ($page * $perPage) - $perPage;
-        $j = $i;
-        for (; $i < $j + $perPage; $i++)
-        {
-            if (!isset($this->rank_cosine[$i]))
-            {
-                break;
-            }
-            $rank_cosine_paginate []= $this->rank_cosine[$i];
-        }
+       
 
+        $rank_cos = implode(',',array_fill(0, count($this->rank_cosine), '?'));
+        $keyword = $this->keyword;
         $this->total_cos = count($this->rank_cosine);
-        //print_r($this->rank_cosine);
-    
-        $this->cos = $this->similarity->hadits->whereIn('id', $this->rank_cosine)->paginate($perPage, ['*'], 'page1');
-        $this->cosArr = $this->cos->toArray();
-        $this->data = $this->cosArr['data'];
-        array_multisort($rank_cosine_paginate, SORT_DESC, $this->data);
-        //$this->cosArr = $this->cos->toArray();
-        //array_multisort($this->rank_cosine, SORT_DESC, $this->cosArr);
+        
+        $this->cos = $this->similarity->hadits->whereIn('id', $this->rank_cosine)->orderByRaw("field(id,{$rank_cos})", $this->rank_cosine)->paginate($perPage, ['*'], 'page1');
+       
 
         $executionEndTime = microtime(true);
         $this->time_cosine = $executionEndTime - $executionStartTime;
@@ -239,33 +217,16 @@ class ViewController extends Controller
         $executionStartTime = microtime(true);
         $halaman = 'jaccard';
         $perPage = 10;
-        $page = 1;
-        if (isset($_GET['page2']))
-        {
-            $page = $_GET['page2'];
-        }
+    
         $this->rank_jaccard = $this->similarity->init($this->keyword, $halaman);
-        $rank_jaccard_paginate = [];
-        $i = $page == 1 ? 0 : ($page * $perPage) - $perPage;
-        $j = $i;
-        for (; $i < $j + $perPage; $i++)
-        {
-            if (!isset($this->rank_jaccard[$i]))
-            {
-                break;
-            }
-            $rank_jaccard_paginate []= $this->rank_jaccard[$i];
-        }
-
+    
+        $rank_jac = implode(',',array_fill(0, count($this->rank_jaccard), '?'));
+        $keyword = $this->keyword;
         $this->total_jac = count($this->rank_jaccard);
         //print_r($this->rank_jaccard);
 
 
-        $this->jac = $this->similarity->hadits->whereIn('id', $this->rank_jaccard)->paginate(10, ['*'], 'page2');
-        
-        $this->jacArr = $this->jac->toArray();
-        $this->data = $this->jacArr['data'];
-        array_multisort($rank_jaccard_paginate, SORT_DESC, $this->data);
+        $this->jac = $this->similarity->hadits->whereIn('id', $this->rank_jaccard)->orderByRaw("field(id,{$rank_jac})", $this->rank_jaccard)->paginate($perPage, ['*'], 'page2');
 
         $executionEndTime = microtime(true);
         $this->time_jaccard = $executionEndTime - $executionStartTime;

@@ -43,18 +43,21 @@ class recallPrecisionController extends Controller
     public function resultCosine($keyword, $total, $time, $rank){
         $this->time_cos = $time;
         $this->total_cos = $total;
-        $keywords = $this->similarity->preprocessingQuery($keyword);
+        $keywords = $keyword;
         $this->rank_cosine = $rank;
             $this->total_cos = count($this->rank_cosine);
-             if(in_array("idul",$keywords) || in_array("fitri",$keywords) || in_array("idul fitri",$keywords)){
+             if("idul" == $keywords || "fitri"== $keywords || "idul fitri" == $keywords){
                 $this->tpCosine("idul fitri");
                 $this->totalRelevanCosine("idul fitri");
-            }elseif (in_array("jual",$keywords) || in_array("beli",$keywords) || in_array("jual beli",$keywords)) {
+            }elseif ("jual"== $keywords || "beli"== $keywords || "jual beli" == $keywords) {
                 $this->tpCosine("jual beli");
                 $this->totalRelevanCosine("jual beli");
-            }elseif(in_array("fitnah", $keywords)){
+            }elseif("fitnah" == $keywords){
                 $this->tpCosine("fitnah");
                 $this->totalRelevanCosine("fitnah");
+            }elseif("peperangan" == $keywords){
+                $this->tpCosine("peperangan");
+                $this->totalRelevanCosine("peperangan");
             }else{
                 $this->TP_cos = 0;
             }
@@ -69,18 +72,21 @@ class recallPrecisionController extends Controller
     public function resultJaccard($keyword, $total, $time, $rank){
         $this->time_jac = $time;
         $this->total_jac = $total;
-        $keywords = $this->similarity->preprocessingQuery($keyword);
+        $keywords = $keyword;
         $this->rank_jaccard = $rank;
             $this->total_jac = count($this->rank_jaccard);
-            if(in_array("idul",$keywords) || in_array("fitri",$keywords) || in_array("idul fitri",$keywords)){
+             if("idul" == $keywords || "fitri"== $keywords || "idul fitri" == $keywords){
                 $this->tpJaccard("idul fitri");
                 $this->totalRelevanJaccard("idul fitri");
-            }elseif (in_array("jual",$keywords) || in_array("beli",$keywords) || in_array("jual beli",$keywords)) {
+           }elseif ("jual"== $keywords || "beli"== $keywords || "jual beli" == $keywords) {
                 $this->tpJaccard("jual beli");
                 $this->totalRelevanJaccard("jual beli");
-            }elseif(in_array("fitnah", $keywords)){
+             }elseif("fitnah" == $keywords){
                 $this->tpJaccard("fitnah");
                 $this->totalRelevanJaccard("fitnah");
+           }elseif("peperangan" == $keywords){
+                $this->tpJaccard("peperangan");
+                $this->totalRelevanJaccard("peperangan");
             }
             else{
                 $this->TP_jac = 0;

@@ -14,20 +14,19 @@ use Phpml\Tokenization\WhitespaceTokenizer;
 
 class TfidfController extends Controller
 {
-    public $docTf;
-    public $tfIdfWeight = [];
-    public $cosSimiliarity = [];
-    public $jacSimiliarity = [];
-    public $tfQuery;
-    public $queryWeight;
-    public $df;
-    public $idf;
-    public $indexterm;
-    public $tfquery_view;
-    public $tfidf = [];
-    public $queryVector=[];
-    public $dotProduct=[];
-    public $docVector=[];
+    private $docTf;
+    private $tfIdfWeight = [];
+    private $cosSimiliarity = [];
+    private $jacSimiliarity = [];
+    private $tfQuery;
+    private $queryWeight;
+    private $df;
+    private $idf;
+    private $indexterm;
+    private $tfidf = [];
+    private $queryVector=[];
+    private $dotProduct=[];
+    private $docVector=[];
     private $similarity;
 
 
@@ -39,7 +38,7 @@ class TfidfController extends Controller
         $this->tfQueryCalculator($terms);
         //$this->documentWeight($documents,$terms);
         $this->queryWeightCalculator($terms);
-        $this->tfidf = $this->TFIDFdata();
+        $this->tfidf = $this->Data();
         $this->documentVector($this->tfidf);
         $this->queryVector($this->tfidf);
         $this->dotProductCalc($this->tfidf);
@@ -67,10 +66,11 @@ class TfidfController extends Controller
         $this->tfdocuments($documents);
 
         $this->indexterm = $vectorizer->getVocabulary();
+        //print_r($this->indexterm);
     }
 
-    private function tfdocuments($arr){
-            $this->docTf = $arr;
+    private function tfdocuments($documents){
+            $this->docTf = $documents;
     }
 
     private function df(){
@@ -89,23 +89,11 @@ class TfidfController extends Controller
         $this->df = $df;
     }
 
-     private function TFIDFdata(){
+     private function Data(){
 
         foreach ($this->indexterm as $index => $indexvalue) {
-            $this->tfidf[$index]['index']          = $indexvalue;
-            $this->tfidf[$index]['tfquery']        = $this->tfQuery[$index];
-            $this->tfidf[$index]['df']             = $this->df[$index];
-            $this->tfidf[$index]['idf']            = $this->idf[$index];
-            $this->tfidf[$index]['tfidfquery']     = $this->queryWeight[$index];
             $this->tfidf['tfidfquery']             = $this->queryWeight;
             $this->tfidf['tfidfdocument']          = $this->tfIdfWeight;
-            $this->tfidf['tfview']                 = $this->tfquery_view;
-            foreach ($this->docTf as $doc => $value) {
-                $this->tfidf[$index]['tfdoc'][$doc] = $this->docTf[$doc][$index];
-            }
-            foreach ($this->docTf as $doc => $value) {
-                $this->tfidf[$index]['tfidfdoc'][$doc] = $this->docTf[$doc][$index];
-            }
         }
         return $this->tfidf;
     }
@@ -136,21 +124,17 @@ class TfidfController extends Controller
 
     private function tfQueryCalculator($query){
         $tfquery = array_fill(0, count($this->indexterm), 0);
-        $tfview = [];
         
-        foreach ($query as $query=>$valq) {
+        foreach ($query as $query=>$q) {
             foreach ($this->indexterm as $index => $value) {
-                if ($value == $valq) {
-
+                if ($value == $q) {
                     $tfquery[$index]+=1;
-                    $tfview[] = $index;
                 }
             }
             
         }
         $this->tfQuery = $tfquery;
-        $this->tfquery_view = $tfview;
-        //print_r($this->tfQuery);
+        // print_r($this->tfQuery);
 
     }
     private function queryWeightCalculator(){
@@ -179,14 +163,9 @@ class TfidfController extends Controller
             $this->dotProduct[$i] = $eachDot;
                $eachDot = 0;
         }
-/*        foreach ($tfidfd as $key => $d) {
-            foreach ($tfidfq as $keys => $q) {
-                $eachDot += $d[$key][$keys] * $tfidfq[$keys];
-            }
-               $this->dotProduct[$key] = $eachDot;
-               $eachDot = 0;
-        }*/
-       // print_r($this->dotProduct);
+        //print_r($tfidfq);
+        //print_r($tfidfd);
+       //print_r($this->dotProduct);
 
     }
 
@@ -194,7 +173,6 @@ class TfidfController extends Controller
         $eachDoc = 0;
         $tfidfd = $tfidf['tfidfdocument'];
         $tfidfq = $tfidf['tfidfquery'];
-        //var_dump($tfidfq);
 
         for($i = 0; $i < count($tfidfd); $i ++ ){
             for($j = 0; $j < count($tfidfq); $j++){
@@ -203,14 +181,8 @@ class TfidfController extends Controller
             $this->docVector[$i] = $eachDoc;
                $eachDoc = 0;
         }
-
+        //print_r($tfidfq);
         //print_r($this->docVector);
-        /*foreach ($tfidfd as $key => $d) {
-            foreach ($tfidfq as $keys => $q) {
-                $eachDoc += $d[$key][$keys] * $d[$key][$keys];
-            }
-              $this->docVector[$key] = $eachDoc;
-        }*/
     }
 
     private function queryVector($tfidf){
@@ -226,11 +198,5 @@ class TfidfController extends Controller
         }
         //print_r($this->queryVector);
 
-        /*foreach ($tfidfd as $key => $d) {
-            foreach ($tfidfq as $keys => $q) {
-                $eachQuery += $tfidfq[$key] * $tfidfq[$key];
-            }
-             $this->queryVector[$key] = $eachQuery;
-        }*/
     }
 }

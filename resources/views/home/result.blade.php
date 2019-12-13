@@ -47,12 +47,11 @@
         </h4>
         <small>Request time  ({{ $time_cosine }} seconds)</small>
         <hr>
-        @foreach($cosArr as $hadits)
-        <?php  
-          $hadits = (object)$hadits;
-        ?>
+        @foreach($cos as $hadits)
+  
         <div class="search-result">
-        <h3>Hadits {{ $hadits->nama_hadits }}</a></h3>
+        <h3>Hadits {{ $hadits->nama_hadits }}</h3>
+    <p>dokumen id {{ $hadits->id }}</p> 
         <?php  
           $hadits_index = (array)$hadits->index;
         ?>
@@ -61,8 +60,20 @@
            @else
             <p style="color: red;">Tidak Relevan</p> <span class="glyphicon glyphicon-ok"></span>
           @endif
+        <?php
+          $text = preg_replace('/(' . $keyword . ')/i', '<span style="background-color:yellow">$1</span>', $hadits->hadits_translate);
+          //$texts = str_limit($text, 600);
+          $str_len = strlen($hadits->hadits_translate);
+        ?>
         <p>
-        {{ str_limit($hadits->hadits_translate, 200) }}
+          <?php
+            echo $str_len;
+          ?>
+        </p>
+        <p>
+        <?php
+        echo $text;
+        ?>
         </p>
         </div>
        <div class="hr-line-dashed"></div>
@@ -85,12 +96,11 @@
       </h4>
       <small>Request time  ({{ $time_jaccard }} seconds)</small>
     <hr>
-      @foreach($jacArr as $hadits)
-       <?php  
-          $hadits = (object)$hadits;
-        ?>
+      @foreach($jac as $hadits)
+ 
       <div class="search-result">
-      <h3>Hadits {{ $hadits->nama_hadits }}</a></h3>
+      <h3>Hadits {{ $hadits->nama_hadits }}</h3>
+    <p>dokumen id {{ $hadits->id }}</p> 
      <?php  
           $hadits_index = (array)$hadits->index;
         ?>
@@ -100,9 +110,22 @@
             <p style="color: red;">Tidak Relevan</p> <span class="glyphicon glyphicon-ok"></span>
           @endif
      
-      <p>
-      {{ str_limit($hadits->hadits_translate, 200) }}
-      </p>
+        <?php
+          $text = preg_replace('/(' . $keyword . ')/i', '<span style="background-color:yellow">$1</span>', $hadits->hadits_translate);
+          //$texts = str_limit($text, 600);
+           $str_len = strlen($hadits->hadits_translate);
+        ?>
+ 
+        <p>
+          <?php
+            echo $str_len;
+          ?>
+        </p>
+        <p>
+        <?php
+        echo $text;
+        ?>
+        </p>
       </div>
      <div class="hr-line-dashed"></div>
       @endforeach

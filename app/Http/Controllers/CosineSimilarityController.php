@@ -24,5 +24,4 @@ class CosineSimilarityController extends Controller
 
     }
 
-
 }
