@@ -9,7 +9,10 @@
 
 ## About Application
 
-Perbandingan metode Cosine Similarity dan Jaccard Similarity pada pencarian hadits bahasa Indonesia.
+Perbandingan metode Cosine Similarity dan Jaccard Similarity pada pencarian hadits bahasa Indonesia menggunakan Laravel 5.7.
+
+![alt text](https://raw.githubusercontent.com/YogaAPSY/bimbel-online/master/Screenshot_79.png)
+![alt text](https://raw.githubusercontent.com/YogaAPSY/bimbel-online/master/Screenshot_80.png)
 
 # Fitur
 - Perhitungan metode TF/IDF menggunakan https://php-ml.readthedocs.io/en/latest/
@@ -17,4 +20,6 @@ Perbandingan metode Cosine Similarity dan Jaccard Similarity pada pencarian hadi
 - Metode Jaccard Similarity
 - Nilai hasil cosine similarity dan jaccard similarity tiap dokumen/data.
 - Highlight hasil pencarian
-- Hasil relevansi menggunakan 
+- Hasil relevansi menggunakan Recall dan Precision
+
+**Don't forget click :star: for my :heart: github.**
